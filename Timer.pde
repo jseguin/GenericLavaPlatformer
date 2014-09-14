@@ -3,7 +3,7 @@
  * Last Modified: April 21st 2010
  * Final Project
  ****************************************************************************/
-class Time {
+class Timer {
   
   int s; //used for easy calculation of time with modulo
   long beginTime; //time in milliseconds the timer started
@@ -13,7 +13,7 @@ class Time {
   color c; //timer text colour
   PFont startFont = loadFont("pixelfont.vlw");// timer font
   
-  Time(float x, float y) {
+  Timer(float x, float y) {
     this.beginTime = millis();
     this.x = x;
     this.y = y;
