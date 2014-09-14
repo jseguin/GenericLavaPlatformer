@@ -30,7 +30,7 @@ import ddf.minim.*;
 
 //Variables
 //----------------------------------------------------------------------------
-Time time; //class to keep track of time passed since game start/score
+Timer timer; //class to keep track of time passed since game start/score
 Minim minim;
 AudioPlayer song;
 PFont startFont; //our game font
@@ -60,7 +60,7 @@ void setup(){
   size(500,620, P2D);
   Fisica.init(this); //sets up physics  
   smooth(); //uncomment for better graphics (at least tino thinks so) 
-  time = new Time(450, 600);
+  timer = new Timer(450, 600);
   minim = new Minim(this);
   song = minim.loadFile("music.mp3");
   song.play();
@@ -166,10 +166,10 @@ void gameOver() {
   text("GAME OVER", width/2, 202);
   textFont(startFont, 25);
   fill(0);
-  text("Your score: " + time.minutes + ":" + time.seconds +"", width/2, 232);
+  text("Your score: " + timer.minutes + ":" + timer.seconds +"", width/2, 232);
   text("Press R to try again", width/2, 272);
   fill(255);
-  text("Your score: " + time.minutes + ":" + time.seconds +"", width/2, 230);
+  text("Your score: " + timer.minutes + ":" + timer.seconds +"", width/2, 230);
   text("Press R to try again", width/2, 270);
 }
 
@@ -286,7 +286,7 @@ void keyReleased() {
   // if in title screen state switch to gameplay and reset timer on key release
   if (gameState == 0) {
     gameState=1;
-    time.restart();
+    timer.restart();
   } 
   else {
     //on release of left keys deactivate left state
@@ -339,11 +339,11 @@ void draw(){
     lava3.drawGradient();
 
     //manage platforms
-    plats.difficulty(time); //increases difficulty(speed) as time goes by
+    plats.difficulty(timer); //increases difficulty(speed) as time goes by
     plats.down(); //adjust platforms to move down
     plats.cleanUp(lavaLvl); //any platforms under the lava are moved to the top
 
-    time.timer(); // call and draw timer
+    timer.timer(); // call and draw timer
   } 
   //Game Over
   else if (gameState == 2) {

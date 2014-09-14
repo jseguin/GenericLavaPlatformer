@@ -105,8 +105,8 @@ class PlatformGen {
   //since game play has started. after 200 seconds the
   //game is on hardest difficulty
   //Takes a time object as a parameter. 
-  void difficulty (Time time) {
-    difficulty = map(time.passedTime()/1000, 1, 200, 0.2,2);
+  void difficulty (Timer timer) {
+    difficulty = map(timer.passedTime()/1000, 1, 200, 0.2,2);
   }
 
   //method lowers all the platforms on/off screen

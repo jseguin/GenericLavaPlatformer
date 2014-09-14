@@ -1,4 +1,4 @@
-class Time {
+class FrameTime {
 
     double currentTime;
     double previousTime;
