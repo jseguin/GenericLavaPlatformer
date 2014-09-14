@@ -1,6 +1,8 @@
 /****************************************************************************
- * Author: Jonathan Seguin, Konstantino Kapetaneas, Winnie Kwan
- * Last Modified: April 21st 2010
+ * Author: Jonathan Seguin
+ * Art: Konstantino Kapetaneas
+ * Concept & Design: Winnie Kwan, Jonathan Seguin, Konstantino Kapetaneas
+ * Last Modified: September 14th 2014
  * Final Project
  ****************************************************************************/
 //4 days of programmming hell. 
