@@ -3,7 +3,7 @@
  * Last Modified: April 21st 2010
  * Final Project
  ****************************************************************************/
-class PlatformGen {
+class PlatformManager {
 
   int numPlats;// total number of platforms on screen at any time
   float maxDistX, minDistX;// platform distance away from adjacent platforms
@@ -16,7 +16,7 @@ class PlatformGen {
   float difficulty; //determines the movement speed of the platforms;
 
   //constructor
-  PlatformGen (int numPlats,FWorld world) {
+  PlatformManager (int numPlats,FWorld world) {
     this.world = world;
     wallRight = width-world.right.getWidth();
     wallLeft = world.left.getWidth();

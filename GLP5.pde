@@ -34,8 +34,8 @@ Timer timer; //class to keep track of time passed since game start/score
 Minim minim;
 AudioPlayer song;
 PFont startFont; //our game font
-Anim runLeft;//animation object for walking left
-Anim runRight;//animation object for walking right
+Animation runLeft;//animation object for walking left
+Animation runRight;//animation object for walking right
 PImage bg, l_wall, r_wall, t_wall; //game environment images
 PImage hl_sprite, hr_sprite, hlj_sprite, hrj_sprite; //player sprites
 PImage logo, copyright; // title screen images
@@ -46,7 +46,7 @@ Lava lava; //objects to draw layered lava
 Lava lava2;// "
 Lava lava3;// "
 int gameState = 0; //3 game states: 0 = title screen; 1 = game play; 2 = game over;
-PlatformGen plats; //class to handle platform generation and modification
+PlatformManager plats; //class to handle platform generation and modification
 
 float lavaLvl = 235;//level of lava for game play
 float lavaLvl2 = 270;// level of lava for title screen
@@ -57,9 +57,9 @@ int jumpCounter = 0;
 //Initialization - see ^Variables^ for what each variable does.
 //----------------------------------------------------------------------------
 void setup(){
-  size(500,620, P2D);
+  size(500,620,P2D);
   Fisica.init(this); //sets up physics  
-  smooth(); //uncomment for better graphics (at least tino thinks so) 
+  //smooth(); //uncomment for better graphics (at least tino thinks so) 
   timer = new Timer(450, 600);
   minim = new Minim(this);
   song = minim.loadFile("music.mp3");
@@ -72,8 +72,8 @@ void setup(){
   bg = loadImage("data/background.gif");
   l_wall = loadImage ("data/wall_left.gif");
   r_wall = loadImage ("data/wall_right.gif");
-  runRight = new Anim (3, "hr_sprite","data/");
-  runLeft=  new Anim (3, "hl_sprite","data/");
+  runRight = new Animation (3, "hr_sprite","data/");
+  runLeft=  new Animation (3, "hl_sprite","data/");
   hl_sprite = loadImage ("data/hl_sprite.gif");
   hlj_sprite = loadImage ("data/hlj_sprite.gif");
   hr_sprite = loadImage ("data/hr_sprite.gif");
@@ -105,7 +105,7 @@ void setup(){
   hero.setFriction(0.1);
   world.add(hero);
   //-----------------------------------------
-  plats = new PlatformGen(12, world);
+  plats = new PlatformManager(12, world);
 }
 
 //Methods
@@ -258,61 +258,7 @@ void control() {
 }
 
 
-void keyPressed() {
-  //if in game play state listen for control keys and activate control states
-  if (gameState ==1) {
-    if (key == 'a' || key == 'A' || key == CODED && keyCode == LEFT) {
-      left = true;
-      direction = false;
-    } 
-    else if (
-    key == 'd' || key == 'D' || key == CODED && keyCode == RIGHT) {
-      right = true;
-      direction = true;
-    } 
-  }
-  //if in game over game state stop song, reset game, restart song
-  if (gameState == 2) {
-    if (key == 'r' || key == 'R') {
-      song.close();
-      setup();
-      gameState = 1;
-      song.play(1500);
-    }
-  }
-}
 
-void keyReleased() {
-  // if in title screen state switch to gameplay and reset timer on key release
-  if (gameState == 0) {
-    gameState=1;
-    timer.restart();
-  } 
-  else {
-    //on release of left keys deactivate left state
-    if (key == 'a' || key == 'A' || key == CODED && keyCode == LEFT) {
-      left = false;
-      if (jumpCounter != 0) {
-      } 
-      else {
-        hero.attachImage(hl_sprite);
-      }
-    } 
-    //on release of right keys deactivate right state
-    else if (key == 'd' || key == 'D'|| key == CODED && keyCode == RIGHT) {
-      right = false;
-      if (jumpCounter != 0) {
-      } 
-      else {
-        hero.attachImage(hr_sprite);
-      }
-    } 
-    //on release of jump key activate jump
-    else if (key == ' '){
-      jump = true;
-    }
-  }
-}
 
 //Output
 //----------------------------------------------------------------------------
