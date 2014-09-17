@@ -3,11 +3,11 @@ void keyPressed() {
     if (gameState ==1) {
         if (key == 'a' || key == 'A' || key == CODED && keyCode == LEFT) {
             left = true;
-            direction = false;
+            player.direction = false;
         } else if (
         key == 'd' || key == 'D' || key == CODED && keyCode == RIGHT) {
             right = true;
-            direction = true;
+            player.direction = true;
         }
     }
     //if in game over game state stop song, reset game, restart song
@@ -30,17 +30,17 @@ void keyReleased() {
         //on release of left keys deactivate left state
         if (key == 'a' || key == 'A' || key == CODED && keyCode == LEFT) {
             left = false;
-            if (jumpCounter != 0) {
+            if (player.jumpCounter != 0) {
             } else {
-                hero.attachImage(hl_sprite);
+                player.getBody().attachImage(hl_sprite);
             }
         } 
         //on release of right keys deactivate right state
         else if (key == 'd' || key == 'D'|| key == CODED && keyCode == RIGHT) {
             right = false;
-            if (jumpCounter != 0) {
+            if (player.jumpCounter != 0) {
             } else {
-                hero.attachImage(hr_sprite);
+                player.getBody().attachImage(hr_sprite);
             }
         } 
         //on release of jump key activate jump
