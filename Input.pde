@@ -25,7 +25,6 @@ void keyReleased() {
     // if in title screen state switch to gameplay and reset timer on key release
     if (gameState == 0) {
         gameState=1;
-        timer.restart();
     } else {
         //on release of left keys deactivate left state
         if (key == 'a' || key == 'A' || key == CODED && keyCode == LEFT) {

@@ -56,7 +56,7 @@ void setup() {
     size(500, 620, P2D);
     Fisica.init(this); //sets up physics  
     //smooth(); //uncomment for better graphics (at least tino thinks so) 
-    timer = new Timer(450, 600);
+    timer = new Timer();
     minim = new Minim(this);
     song = minim.loadFile("music.mp3");
     song.play();
@@ -160,10 +160,10 @@ void gameOver() {
     text("GAME OVER", width/2, 202);
     textFont(startFont, 25);
     fill(0);
-    text("Your score: " + timer.minutes + ":" + timer.seconds +"", width/2, 232);
+    text("Your score: " + timer.toString() + "", width/2, 232);
     text("Press R to try again", width/2, 272);
     fill(255);
-    text("Your score: " + timer.minutes + ":" + timer.seconds +"", width/2, 230);
+    text("Your score: " + timer.toString() + "", width/2, 230);
     text("Press R to try again", width/2, 270);
 }
 
@@ -214,7 +214,13 @@ void control() {
     }
 }
 
-
+void displayTime(int x, int y) {
+    textFont(startFont, 25);
+    fill(0);
+    text(timer.toString(), x, y+2);
+    fill(color(222, 255, 122));
+    text(timer.toString(), x, y);   
+}
 
 
 //Output
@@ -226,6 +232,10 @@ void draw() {
     } 
     //Game Play
     else if (gameState == 1) {
+        if (!timer.isTiming()) {
+            timer.reset();
+            timer.begin();
+        }
         control(); //manage user input
         image(bg, 0, 0); //draw background
         isDead(player.getBody()); //check to see if player is dead
@@ -246,10 +256,12 @@ void draw() {
         plats.down(); //adjust platforms to move down
         plats.cleanUp(lavaLvl); //any platforms under the lava are moved to the top
 
-        timer.timer(); // call and draw timer
+        timer.update(); // call and draw timer
+        displayTime(450,600);
     } 
     //Game Over
     else if (gameState == 2) {
+        timer.halt();
         gameOver();
     }
 }
