@@ -116,6 +116,7 @@ class PlatformManager {
     for (int a = 0; a < numPlats; a++) {
       if (plats[a] != null) {
         plats[a].adjustPosition(0, difficulty);
+//          plats[a].setPosition(plats[a].getX(),-plats[a].getY() - 0.01);
       }
     }
     if (startPlat != null) {
