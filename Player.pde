@@ -1,5 +1,7 @@
 class Player implements Entity {
-
+    
+    private BoxCollider AABB;
+    
     FBox boundingBox; //physics object that represents the player
     boolean direction; //player is facing: right = true; left = false;
     float speedX, speedY;//player velocity in x and y axes
@@ -20,11 +22,17 @@ class Player implements Entity {
         boundingBox.setRotatable(false);
         boundingBox.attachImage(hl_sprite);
         boundingBox.setFriction(0.1);
+        
+        //AABB
     }
 
     FBox getBody() {
         return boundingBox;
     }
+    
+//    BoxCollider getAABB() {
+//    
+//    }
 
     //method causes player to jump
     void jump () {

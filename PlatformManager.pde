@@ -130,11 +130,11 @@ class PlatformManager {
   void cleanUp (float lavalvl) {
     for (int a = 0; a < numPlats; a++) {
       // if platform is below lava
-      if (plats[a] != null && plats[a].getY() > height-lavaLvl+30) { 
+      if (plats[a] != null && plats[a].getY() > height-lavaHeight+30) { 
         generate(plats[a],random(-75,0)); //reset platforms to top of screen
       } 
       //if starting platform is below lava
-      if (startPlat != null && startPlat.getY() > height-lavaLvl+30) {
+      if (startPlat != null && startPlat.getY() > height-lavaHeight+30) {
         startPlat.remove(); //move starting platform down and remove it.
         startPlat = null; //only needs to be removed once from the physics engine.
       }

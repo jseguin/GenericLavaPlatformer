@@ -41,14 +41,16 @@ Player player;
 Lava lava; //objects to draw layered lava
 Lava lava2;// "
 Lava lava3;// "
-float lavaLvl = 235;//level of lava for game play
-float lavaLvl2 = 270;// level of lava for title screen
+float lavaHeight = 235;//level of lava for game play
+float titleScreen_lavaHeight = 270;// level of lava for title screen
 
 PlatformManager plats; //class to handle platform generation and modification
 
 int gameState = 0; //3 game states: 0 = title screen; 1 = game play; 2 = game over;
 
 boolean left, right, jump;//booleans switches to see if an action is to be performed
+
+FrameTime frameTime = new FrameTime();
 
 //Initialization - see ^Variables^ for what each variable does.
 //----------------------------------------------------------------------------
@@ -79,9 +81,9 @@ void setup() {
     //-------
     player = new Player();
     //-------
-    lava = new Lava(color(138, 17, 24), 0.002);
-    lava2 = new Lava(color(227, 56, 28), 0.003);
-    lava3 = new Lava(color(251, 102, 30), 0.004);
+    lava = new Lava(color(138, 17, 24), 0.002, lavaHeight);
+    lava2 = new Lava(color(227, 56, 28), 0.003, lavaHeight-5);
+    lava3 = new Lava(color(251, 102, 30), 0.004, lavaHeight-10);
 
     //initialization specific to physics engine 
     //-----------------------------------------
@@ -117,10 +119,15 @@ void stop() {
 void title() {
     //  background(150);
     image(bg, 0, 0);
-
-    lava.drawLava(lavaLvl2);
-    lava2.drawLava(lavaLvl2-5);
-    lava3.drawLava(lavaLvl2-10);
+    lava.setHeight(titleScreen_lavaHeight);
+    lava2.setHeight(titleScreen_lavaHeight-5);
+    lava3.setHeight(titleScreen_lavaHeight-10);
+    lava.update(frameTime.deltaTime());
+    lava2.update(frameTime.deltaTime());
+    lava3.update(frameTime.deltaTime());
+    lava.display();
+    lava2.display();
+    lava3.display();
     lava3.drawGradient();
 
     image(logo, 65, 100);
@@ -142,9 +149,15 @@ void gameOver() {
     image(bg, 0, 0);
     world.step();
     world.draw();
-    lava.drawLava(lavaLvl2);
-    lava2.drawLava(lavaLvl2-5);
-    lava3.drawLava(lavaLvl2-10);
+    lava.setHeight(titleScreen_lavaHeight);
+    lava2.setHeight(titleScreen_lavaHeight-5);
+    lava3.setHeight(titleScreen_lavaHeight-10);
+    lava.update(frameTime.deltaTime());
+    lava2.update(frameTime.deltaTime());
+    lava3.update(frameTime.deltaTime());
+    lava.display();
+    lava2.display();
+    lava3.display();
     lava3.drawGradient();
     fill(0, 100);
     rect(0, 0, width, height);
@@ -180,7 +193,7 @@ void contactStarted (FContact contact) {
     {
         //is touching ground? *cough or beside the ground cough*
         if ((playerBody.getY()+playerBody.getHeight()/2) - contact.getY() < 1) {
-         player.land();   
+            player.land();
         }
     }
 }
@@ -188,7 +201,7 @@ void contactStarted (FContact contact) {
 //method checks to see if character is dead
 //and changes game state to game over if true
 void isDead(FBody target) {
-    if (target.getY() > height-lavaLvl) {
+    if (target.getY() > height-lavaHeight) {
         gameState = 2;
     }
 }
@@ -219,13 +232,14 @@ void displayTime(int x, int y) {
     fill(0);
     text(timer.toString(), x, y+2);
     fill(color(222, 255, 122));
-    text(timer.toString(), x, y);   
+    text(timer.toString(), x, y);
 }
 
 
 //Output
 //----------------------------------------------------------------------------
 void draw() {
+    float delta = frameTime.deltaTime();
     //title Screen
     if (gameState == 0) {
         title();
@@ -235,7 +249,11 @@ void draw() {
         if (!timer.isTiming()) {
             timer.reset();
             timer.begin();
+            lava.setHeight(lavaHeight);
+            lava2.setHeight(lavaHeight-5);
+            lava3.setHeight(lavaHeight-10);
         }
+        
         control(); //manage user input
         image(bg, 0, 0); //draw background
         isDead(player.getBody()); //check to see if player is dead
@@ -245,19 +263,21 @@ void draw() {
         world.step();
         world.draw();
 
-        //draw lava
-        lava.drawLava(lavaLvl);
-        lava2.drawLava(lavaLvl-5);
-        lava3.drawLava(lavaLvl-10);
+        lava.update(delta);
+        lava2.update(delta);
+        lava3.update(delta);
+        lava.display();
+        lava2.display();
+        lava3.display();
         lava3.drawGradient();
 
         //manage platforms
         plats.difficulty(timer); //increases difficulty(speed) as time goes by
         plats.down(); //adjust platforms to move down
-        plats.cleanUp(lavaLvl); //any platforms under the lava are moved to the top
+        plats.cleanUp(lavaHeight); //any platforms under the lava are moved to the top
 
         timer.update(); // call and draw timer
-        displayTime(450,600);
+        displayTime(450, 600);
     } 
     //Game Over
     else if (gameState == 2) {
@@ -265,3 +285,4 @@ void draw() {
         gameOver();
     }
 }
+
