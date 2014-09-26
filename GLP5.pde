@@ -59,7 +59,7 @@ int jumpCounter = 0;
 //Initialization - see ^Variables^ for what each variable does.
 //----------------------------------------------------------------------------
 void setup(){
-  size(500,620);
+  size(500,620,P2D);
   Fisica.init(this); //sets up physics
   //smooth(); //uncomment for better graphics (at least tino thinks so) 
   time = new Time(450, 600);
