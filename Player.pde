@@ -1,10 +1,16 @@
 class Player extends MovableEntity {
 
     //private BoxCollider AABB;
+    protected static final int LEFT = 0;
+    protected static final int RIGHT = 1;
+    protected static final int UP = 2;
+    protected static final int DOWN = 3;
+    protected int direction;
+
     boolean isGravityAffected = true;
 
     FBox boundingBox; //physics object that represents the player
-    boolean direction; //player is facing: right = true; left = false;
+    //boolean direction; //player is facing: right = true; left = false;
     float maxSpeedX, maxSpeedY;// xVelocity, yVelocity;//player velocity in x and y axes
     int jumpCounter = 0;
     Animation runLeft; //animation object for walking left
@@ -13,16 +19,12 @@ class Player extends MovableEntity {
         runRight = new Animation (3, "hr_sprite", "data/");
         runLeft = new Animation (3, "hl_sprite", "data/");
         maxSpeedX = 800;//10;
-        maxSpeedY = 400;
-        
-        acceleration = new PVector(50,100);
+        maxSpeedY = 550;
+
+        acceleration = new PVector(1000, 100);
 
         //AABB
         AABB = new BoxCollider(width/2, height/2, 32, 34);
-    }
-
-    FBox getBody() {
-        return boundingBox;
     }
 
     BoxCollider getAABB() {
@@ -37,12 +39,36 @@ class Player extends MovableEntity {
         jump=false;
     }
 
-    void left() { 
-        velocity.x = constrain(velocity.x - acceleration.x, -maxSpeedX, maxSpeedX);
+    void setDirection (int direction) {
+        this.direction = direction;
     }
 
-    void right () { 
-        velocity.x = constrain(velocity.x + acceleration.x, -maxSpeedX, maxSpeedX);
+    void left(float deltaTime) { 
+        direction = LEFT;
+
+        //If in air
+        if (jumpCounter > 0) {
+            velocity.x = constrain(velocity.x - acceleration.x * deltaTime, -maxSpeedX, maxSpeedX);
+        } 
+        //If on ground
+        else {
+            //must accelerate upto 15% of maxSpeed left before direction change from right
+            velocity.x = constrain(velocity.x - acceleration.x * deltaTime, -maxSpeedX, maxSpeedX*0.15);
+        }
+    }
+
+    void right (float deltaTime) { 
+        direction = RIGHT;
+
+        //If in air
+        if (jumpCounter > 0) {
+            velocity.x = constrain(velocity.x + acceleration.x * deltaTime, -maxSpeedX, maxSpeedX);
+        } 
+        //If on ground
+        else {        
+            //must accelerate upto 15% of maxSpeed right before direction change from left  
+            velocity.x = constrain(velocity.x + acceleration.x * deltaTime, -maxSpeedX*0.15, maxSpeedX);
+        }
     }
 
     void land() {
@@ -50,19 +76,17 @@ class Player extends MovableEntity {
         jumpCounter = 0; //reset jumpCounter so player can jump again
 
         //reset sprites when player lands to standing sprite
-        if (direction) {
-        }
-        //            boundingBox.attachImage(hr_sprite);
-        if (!direction) {
-        }
-        //            boundingBox.attachImage(hl_sprite);
+        //        if (direction == RIGHT) {
+        //            //set standing right sprite
+        //        }
+        //
+        //        if (direction == LEFT) {
+        //            //set standing left sprite
+        //        }
     }
 
     boolean isFalling() {
-        if (velocity.y > 0) {
-            return true;
-        }
-        return false;
+        return velocity.y > 0 ? true : false;
     }
 
     boolean isGravityAffected() {
@@ -71,22 +95,34 @@ class Player extends MovableEntity {
 
     void update(float deltaTime) {
         if (left) {
-            player.left();
+            player.left(deltaTime);
         }
 
         //move right
         if (right) {
-            player.right();
-        }
-
-        if (!right && !left) {
-//            float decelerationX = velocity.x > 0 ? -acceleration.x : acceleration.x;
-//            velocity.x = constrain(velocity.x + decelerationX, -maxSpeedX, maxSpeedX);;
-            velocity.x = 0;
+            player.right(deltaTime);
         }
         
+        
+        if (!right && !left) {
+            float decelerationX = 0;
+            float airAccelerationScale = jumpCounter > 0 ? 0.5 : 1;
+            float frictionScale = jumpCounter > 0 ? 1 : 1;
+            
+            switch (direction) {
+            case RIGHT: 
+                decelerationX = -acceleration.x * frictionScale * airAccelerationScale;
+                velocity.x = constrain(velocity.x + decelerationX * deltaTime, 0, maxSpeedX);
+                break;
+            case LEFT: 
+                decelerationX = acceleration.x * frictionScale * airAccelerationScale;
+                velocity.x = constrain(velocity.x + decelerationX * deltaTime, -maxSpeedX, 0);
+                break;
+            }
+        }
+
         //Land - order important;
-        if (AABB.getTouching()[3]) {
+        if (AABB.getTouching()[DOWN]) {
             land();
         }
 
@@ -97,7 +133,7 @@ class Player extends MovableEntity {
         if (isGravityAffected) {
             applyGravity(new PVector(0, 1000), deltaTime);
         }     
-        
+
         AABB.setPosition(AABB.getX() + velocity.x * deltaTime, AABB.getY() + velocity.y * deltaTime);
     }
 

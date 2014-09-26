@@ -5,11 +5,11 @@ void keyPressed() {
     if (gameState ==1) {
         if (key == 'a' || key == 'A' || key == CODED && keyCode == LEFT) {
             left = true;
-            player.direction = false;
+//            player.direction = false;
         } else if (
         key == 'd' || key == 'D' || key == CODED && keyCode == RIGHT) {
             right = true;
-            player.direction = true;
+//            player.direction = true;
         } else if (key == ' ' && !jumpInputLocked) {
             jump = true;
             jumpInputLocked = true;

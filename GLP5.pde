@@ -103,7 +103,7 @@ void setup() {
     world.right.attachImage(r_wall);
     world.top.setDrawable(false); 
     //player
-    world.add(player.getBody());
+//    world.add(player.getBody());
     //-----------------------------------------
     plats = new PlatformManager(12, world);
     
@@ -196,15 +196,15 @@ void gameOver() {
 //and an object and the player's feet touch
 //the surface of that object then 
 void contactStarted (FContact contact) {
-    FBox playerBody = this.player.getBody();
-    if (contact.getBody1() == playerBody || 
-        contact.getBody2() == playerBody) 
-    {
-        //is touching ground? *cough or beside the ground cough*
-        if ((playerBody.getY()+playerBody.getHeight()/2) - contact.getY() < 1) {
-            player.land();
-        }
-    }
+//    FBox playerBody = this.player.getBody();
+//    if (contact.getBody1() == playerBody || 
+//        contact.getBody2() == playerBody) 
+//    {
+//        //is touching ground? *cough or beside the ground cough*
+//        if ((playerBody.getY()+playerBody.getHeight()/2) - contact.getY() < 1) {
+//            player.land();
+//        }
+//    }
 }
 
 //method checks to see if character is dead
@@ -218,23 +218,23 @@ void isDead(FBody target) {
 //method handles activation of any player actions
 //eg: if jump state is active then call the jump function
 //if control() is not called the player will be immobile.
-void control() {
-    //move left
-    if (left) {
-        player.left();
-    }
-
-   //move right
-    if (right) {
-        player.right();
-    }
-
-    //Jump 
-    if (jump) {
-        player.jump();
-        jump=false;
-    }
-}
+//void control() {
+//    //move left
+//    if (left) {
+//        player.left();
+//    }
+//
+//   //move right
+//    if (right) {
+//        player.right();
+//    }
+//
+//    //Jump 
+//    if (jump) {
+//        player.jump();
+//        jump=false;
+//    }
+//}
 
 void displayTime(int x, int y) {
     textFont(startFont, 25);
@@ -249,7 +249,7 @@ void displayTime(int x, int y) {
 //----------------------------------------------------------------------------
 void draw() {
     float delta = frameTime.deltaTime();
-    println("FPS: " + frameRate);
+//    println("FPS: " + frameRate);
     //title Screen
     if (gameState == 0) {
         title();
@@ -258,10 +258,10 @@ void draw() {
     else if (gameState == 1) {
         image(bg, 0, 0); //draw background
         player.update(delta);
-        player.getAABB().handleCollision(platform);
+//        player.getAABB().handleCollision(platform);
         player.getAABB().handleCollision(floor);
         player.getAABB().display();
-        platform.display();
+//        platform.display();
         floor.display();
         
         
