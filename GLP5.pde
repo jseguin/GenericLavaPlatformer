@@ -258,10 +258,10 @@ void draw() {
     else if (gameState == 1) {
         image(bg, 0, 0); //draw background
         player.update(delta);
-//        player.getAABB().handleCollision(platform);
+        player.getAABB().handleCollision(platform);
         player.getAABB().handleCollision(floor);
         player.getAABB().display();
-//        platform.display();
+        platform.display();
         floor.display();
         
         

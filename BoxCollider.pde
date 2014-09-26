@@ -31,21 +31,31 @@ class BoxCollider {
 
     void setRange(float xMin, float xMax, float yMin, float yMax) {
         xRangeMin = xMin;
-        xRangeMax = xMax;
-        yRangeMin = yMin;
+        xRangeMax = xMax - w;
+        yRangeMin = yMin - h;
         yRangeMax = yMax;
     }
-
+    
+    //Returns the bounds inside an array [xmin, xmax, ymin, ymax]
+    float[] getRange() {
+        return new float[] {this.xRangeMin, this.xRangeMax, this.yRangeMin, this.yRangeMax}; 
+    }
 
     float getX () {
         return x;
     }
-
+    
+    float getWidth() {
+        return w;
+    }
 
     float getY () {
         return y;
     }
-
+    
+    float getHeight() {
+         return h;   
+    }
 
     PVector getPosition () {
         return new PVector(x, y);
@@ -101,7 +111,7 @@ class BoxCollider {
 
     boolean[] getTouching() {
         boolean[] locks = {
-            rightLock, leftLock, upLock, downLock
+             leftLock, rightLock, upLock, downLock
         };
         
         return locks;
