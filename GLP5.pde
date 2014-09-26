@@ -52,6 +52,10 @@ boolean left, right, jump;//booleans switches to see if an action is to be perfo
 
 FrameTime frameTime = new FrameTime();
 
+//Test Stuff, Remove!
+BoxCollider floor;
+BoxCollider platform;
+
 //Initialization - see ^Variables^ for what each variable does.
 //----------------------------------------------------------------------------
 void setup() {
@@ -102,6 +106,11 @@ void setup() {
     world.add(player.getBody());
     //-----------------------------------------
     plats = new PlatformManager(12, world);
+    
+    
+    //Test Stuff; Remove!
+    platform = new BoxCollider(width/4, height/2, 30,100);
+    floor = new BoxCollider(0,height/2+40,width, 30  );
 }
 
 //Methods
@@ -215,7 +224,7 @@ void control() {
         player.left();
     }
 
-    //move right
+   //move right
     if (right) {
         player.right();
     }
@@ -240,29 +249,39 @@ void displayTime(int x, int y) {
 //----------------------------------------------------------------------------
 void draw() {
     float delta = frameTime.deltaTime();
+    println("FPS: " + frameRate);
     //title Screen
     if (gameState == 0) {
         title();
     } 
     //Game Play
     else if (gameState == 1) {
-        if (!timer.isTiming()) {
-            timer.reset();
-            timer.begin();
-            lava.setHeight(lavaHeight);
-            lava2.setHeight(lavaHeight-5);
-            lava3.setHeight(lavaHeight-10);
-        }
-        
-        control(); //manage user input
         image(bg, 0, 0); //draw background
-        isDead(player.getBody()); //check to see if player is dead
+        player.update(delta);
+        player.getAABB().handleCollision(platform);
+        player.getAABB().handleCollision(floor);
+        player.getAABB().display();
+        platform.display();
+        floor.display();
+        
+        
+//        if (!timer.isTiming()) {
+//            timer.reset();
+//            timer.begin();
+//            lava.setHeight(lavaHeight);
+//            lava2.setHeight(lavaHeight-5);
+//            lava3.setHeight(lavaHeight-10);
+//        }
+//        
+//        control(); //manage user input
 
-
-        //advance and draw physics
-        world.step();
-        world.draw();
-
+//        isDead(player.getBody()); //check to see if player is dead
+//
+//
+//        //advance and draw physics
+//        world.step();
+//        world.draw();
+//
         lava.update(delta);
         lava2.update(delta);
         lava3.update(delta);
@@ -270,14 +289,15 @@ void draw() {
         lava2.display();
         lava3.display();
         lava3.drawGradient();
-
-        //manage platforms
-        plats.difficulty(timer); //increases difficulty(speed) as time goes by
-        plats.down(); //adjust platforms to move down
-        plats.cleanUp(lavaHeight); //any platforms under the lava are moved to the top
-
-        timer.update(); // call and draw timer
-        displayTime(450, 600);
+//        
+//
+//        //manage platforms
+//        plats.difficulty(timer); //increases difficulty(speed) as time goes by
+//        plats.down(); //adjust platforms to move down
+//        plats.cleanUp(lavaHeight); //any platforms under the lava are moved to the top
+//
+//        timer.update(); // call and draw timer
+//        displayTime(450, 600);
     } 
     //Game Over
     else if (gameState == 2) {

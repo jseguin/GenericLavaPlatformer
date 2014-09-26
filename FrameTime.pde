@@ -16,6 +16,7 @@ class FrameTime {
         currentTime = millis()/1000f;
         deltaTime = currentTime - previousTime;
         previousTime = currentTime;
+//        println(deltaTime);
         return deltaTime;
     }
 }

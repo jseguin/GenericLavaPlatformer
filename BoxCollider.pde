@@ -6,22 +6,26 @@ class BoxCollider {
     private boolean rightLock, leftLock, upLock, downLock;
     private PVector correctionVector, b1_CentrePoint, b2_CentrePoint, centrePointDifference;
 
-    BoxCollider (int x, int y, int w, int h) {
-
-        this.x = x;
-        this.y = y;
+    BoxCollider (int w, int h) {
         this.w = w;
         this.h = h;
 
         xRangeMin = 0; //Float.NEGATIVE_INFINITY;
-        xRangeMax = width; //Float.POSITIVE_INFINITY;
-        yRangeMax = height; //Float.POSITIVE_INFINITY;
+        xRangeMax = width-w; //Float.POSITIVE_INFINITY;
+        yRangeMax = height-h; //Float.POSITIVE_INFINITY;
         yRangeMin = 0; //Float.NEGATIVE_INFINITY;
 
         correctionVector = new PVector();
         b1_CentrePoint = new PVector();
         b2_CentrePoint = new PVector();
         centrePointDifference = new PVector();
+    }
+
+
+    BoxCollider (int x, int y, int w, int h) {
+        this(w, h);
+        this.x = x;
+        this.y = y;
     }
 
 
@@ -93,6 +97,14 @@ class BoxCollider {
         downLock = false;
         upLock = false;
         leftLock = false;
+    }
+
+    boolean[] getTouching() {
+        boolean[] locks = {
+            rightLock, leftLock, upLock, downLock
+        };
+        
+        return locks;
     }
 
     boolean isCollidingWith (BoxCollider b2) {
@@ -218,4 +230,11 @@ class BoxCollider {
             }
         }
     }
+
+    void display() {
+        fill(0, 0);
+        stroke(255, 0, 0);
+        rect(x, y, w, h);
+    }
 }
+

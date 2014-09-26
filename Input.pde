@@ -1,3 +1,5 @@
+boolean jumpInputLocked = false;
+
 void keyPressed() {
     //if in game play state listen for control keys and activate control states
     if (gameState ==1) {
@@ -8,6 +10,9 @@ void keyPressed() {
         key == 'd' || key == 'D' || key == CODED && keyCode == RIGHT) {
             right = true;
             player.direction = true;
+        } else if (key == ' ' && !jumpInputLocked) {
+            jump = true;
+            jumpInputLocked = true;
         }
     }
     //if in game over game state stop song, reset game, restart song
@@ -31,7 +36,7 @@ void keyReleased() {
             left = false;
             if (player.jumpCounter != 0) {
             } else {
-                player.getBody().attachImage(hl_sprite);
+                //                player.getBody().attachImage(hl_sprite);
             }
         } 
         //on release of right keys deactivate right state
@@ -39,12 +44,13 @@ void keyReleased() {
             right = false;
             if (player.jumpCounter != 0) {
             } else {
-                player.getBody().attachImage(hr_sprite);
+                //                player.getBody().attachImage(hr_sprite);
             }
         } 
         //on release of jump key activate jump
         else if (key == ' ') {
-            jump = true;
+            jumpInputLocked = false;
         }
     }
 }
+

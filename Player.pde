@@ -1,94 +1,107 @@
-class Player implements Entity {
-    
-    private BoxCollider AABB;
-    
+class Player extends MovableEntity {
+
+    //private BoxCollider AABB;
+    boolean isGravityAffected = true;
+
     FBox boundingBox; //physics object that represents the player
     boolean direction; //player is facing: right = true; left = false;
-    float speedX, speedY;//player velocity in x and y axes
+    float maxSpeedX, maxSpeedY;// xVelocity, yVelocity;//player velocity in x and y axes
     int jumpCounter = 0;
     Animation runLeft; //animation object for walking left
     Animation runRight; //animation object for walking right
-
-        Player() {
+    Player() {
         runRight = new Animation (3, "hr_sprite", "data/");
         runLeft = new Animation (3, "hl_sprite", "data/");
-        speedX = 10;
-        speedY = 400;
-
-        //Physics
-        boundingBox = new FBox(32, 34);
-        boundingBox.setRestitution(0);
-        boundingBox.setPosition(width/2, 300);
-        boundingBox.setRotatable(false);
-        boundingBox.attachImage(hl_sprite);
-        boundingBox.setFriction(0.1);
+        maxSpeedX = 800;//10;
+        maxSpeedY = 400;
         
+        acceleration = new PVector(50,100);
+
         //AABB
+        AABB = new BoxCollider(width/2, height/2, 32, 34);
     }
 
     FBox getBody() {
         return boundingBox;
     }
-    
-//    BoxCollider getAABB() {
-//    
-//    }
 
-    //method causes player to jump
+    BoxCollider getAABB() {
+        return AABB;
+    }
+
     void jump () {
-
-        if (direction) { //if facing right
-            boundingBox.attachImage(hrj_sprite); //draw right jump sprite
-        } else if (!direction) { //if facing left
-            boundingBox.attachImage(hlj_sprite); //draw left jump sprite
+        if (jumpCounter >= 0 && jumpCounter < 2) {
+            velocity.y = -maxSpeedY;
         }
-
-
-        if (jumpCounter < 2) { // allow jump to be called twice only
-            boundingBox.adjustVelocity(0, -speedY); //adjust vertical velocity
-            jumpCounter++; //keeps track of your jumps (max 2 allowed)
-        }
+        jumpCounter++;
+        jump=false;
     }
 
-    void left() {
-        boundingBox.adjustVelocity(-speedX, 0); //decrease player's horizontal velocity
-        //draw sprites
-        if (frameCount % 6 == 0) { 
-            if (jumpCounter != 0) { // if in the air draw jump sprites
-                boundingBox.attachImage(hlj_sprite);
-            } else {
-                boundingBox.attachImage(runLeft.cycler()); // if on ground cycle through run animation
-            }
-        }
+    void left() { 
+        velocity.x = constrain(velocity.x - acceleration.x, -maxSpeedX, maxSpeedX);
     }
 
-    void right() {
-        boundingBox.adjustVelocity(speedX, 0); //increase player's horizontal velocity
-
-        //draw sprites 
-        if (frameCount % 6 == 0) {
-            if (jumpCounter != 0) { // if in the air draw jump sprites
-                boundingBox.attachImage(hrj_sprite);
-            } else {
-                boundingBox.attachImage(runRight.cycler()); // if on ground cycle through run animation
-            }
-        }
+    void right () { 
+        velocity.x = constrain(velocity.x + acceleration.x, -maxSpeedX, maxSpeedX);
     }
 
     void land() {
 
-        player.jumpCounter = 0; //reset jumpCounter so player can jump again
+        jumpCounter = 0; //reset jumpCounter so player can jump again
 
         //reset sprites when player lands to standing sprite
-        if (player.direction)
-            boundingBox.attachImage(hr_sprite);
-        if (!player.direction)
-            boundingBox.attachImage(hl_sprite);
+        if (direction) {
+        }
+        //            boundingBox.attachImage(hr_sprite);
+        if (!direction) {
+        }
+        //            boundingBox.attachImage(hl_sprite);
     }
 
-    void update(float delta) {
+    boolean isFalling() {
+        if (velocity.y > 0) {
+            return true;
+        }
+        return false;
+    }
+
+    boolean isGravityAffected() {
+        return isGravityAffected;
+    } 
+
+    void update(float deltaTime) {
+        if (left) {
+            player.left();
+        }
+
+        //move right
+        if (right) {
+            player.right();
+        }
+
+        if (!right && !left) {
+//            float decelerationX = velocity.x > 0 ? -acceleration.x : acceleration.x;
+//            velocity.x = constrain(velocity.x + decelerationX, -maxSpeedX, maxSpeedX);;
+            velocity.x = 0;
+        }
+        
+        //Land - order important;
+        if (AABB.getTouching()[3]) {
+            land();
+        }
+
+        if (jump) {
+            player.jump();
+        }
+
+        if (isGravityAffected) {
+            applyGravity(new PVector(0, 1000), deltaTime);
+        }     
+        
+        AABB.setPosition(AABB.getX() + velocity.x * deltaTime, AABB.getY() + velocity.y * deltaTime);
     }
 
     void display () {
     }
 }
+
