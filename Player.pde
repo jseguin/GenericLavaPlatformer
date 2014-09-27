@@ -146,7 +146,7 @@ class Player extends MovableEntity {
         }
 
         AABB.setPosition(AABB.getX() + velocity.x * deltaTime, AABB.getY() + velocity.y * deltaTime);
-        println("Velocity X: " + velocity.y);
+//        println("Velocity y: " + velocity.y);
     }
 
     void display () {

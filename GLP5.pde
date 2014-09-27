@@ -46,7 +46,10 @@ float titleScreen_lavaHeight = 270;// level of lava for title screen
 
 PlatformManager plats; //class to handle platform generation and modification
 
-int gameState = 0; //3 game states: 0 = title screen; 1 = game play; 2 = game over;
+final int TITLESCREEN = 0;
+final int GAMEPLAYSCREEN = 1;
+final int GAMEOVERSCREEN = 3;
+int gameState = TITLESCREEN; //3 game states: 0 = title screen; 1 = game play; 2 = game over;
 
 boolean left, right, jump;//booleans switches to see if an action is to be performed
 
@@ -103,14 +106,14 @@ void setup() {
     world.right.attachImage(r_wall);
     world.top.setDrawable(false); 
     //player
-//    world.add(player.getBody());
+    //    world.add(player.getBody());
     //-----------------------------------------
     plats = new PlatformManager(12, world);
-    
-    
+
+
     //Test Stuff; Remove!
-    platform = new BoxCollider(width/4, height/2, 30,100);
-    floor = new BoxCollider(0,height/2+40,width, 30  );
+    platform = new BoxCollider(width/4, height/2, 30, 100);
+    floor = new BoxCollider(0, height/2+40, width, 30  );
 }
 
 //Methods
@@ -196,15 +199,15 @@ void gameOver() {
 //and an object and the player's feet touch
 //the surface of that object then 
 void contactStarted (FContact contact) {
-//    FBox playerBody = this.player.getBody();
-//    if (contact.getBody1() == playerBody || 
-//        contact.getBody2() == playerBody) 
-//    {
-//        //is touching ground? *cough or beside the ground cough*
-//        if ((playerBody.getY()+playerBody.getHeight()/2) - contact.getY() < 1) {
-//            player.land();
-//        }
-//    }
+    //    FBox playerBody = this.player.getBody();
+    //    if (contact.getBody1() == playerBody || 
+    //        contact.getBody2() == playerBody) 
+    //    {
+    //        //is touching ground? *cough or beside the ground cough*
+    //        if ((playerBody.getY()+playerBody.getHeight()/2) - contact.getY() < 1) {
+    //            player.land();
+    //        }
+    //    }
 }
 
 //method checks to see if character is dead
@@ -249,60 +252,63 @@ void displayTime(int x, int y) {
 //----------------------------------------------------------------------------
 void draw() {
     float delta = frameTime.deltaTime();
-//    println("FPS: " + frameRate);
-    //title Screen
-    if (gameState == 0) {
-        title();
-    } 
-    //Game Play
-    else if (gameState == 1) {
-        image(bg, 0, 0); //draw background
-        player.update(delta);
-        player.getAABB().handleCollision(platform);
-        player.getAABB().handleCollision(floor);
-        player.getAABB().display();
-        platform.display();
-        floor.display();
-        
-        
-//        if (!timer.isTiming()) {
-//            timer.reset();
-//            timer.begin();
-//            lava.setHeight(lavaHeight);
-//            lava2.setHeight(lavaHeight-5);
-//            lava3.setHeight(lavaHeight-10);
-//        }
-//        
-//        control(); //manage user input
+    //    println("FPS: " + frameRate);
 
-//        isDead(player.getBody()); //check to see if player is dead
-//
-//
-//        //advance and draw physics
-//        world.step();
-//        world.draw();
-//
-        lava.update(delta);
-        lava2.update(delta);
-        lava3.update(delta);
-        lava.display();
-        lava2.display();
-        lava3.display();
-        lava3.drawGradient();
-//        
-//
-//        //manage platforms
-//        plats.difficulty(timer); //increases difficulty(speed) as time goes by
-//        plats.down(); //adjust platforms to move down
-//        plats.cleanUp(lavaHeight); //any platforms under the lava are moved to the top
-//
-//        timer.update(); // call and draw timer
-//        displayTime(450, 600);
-    } 
-    //Game Over
-    else if (gameState == 2) {
+
+    switch (gameState) {
+    case TITLESCREEN:
+        title();
+        break;
+    case GAMEPLAYSCREEN:
+        {
+            image(bg, 0, 0); //draw background
+            player.update(delta);
+            player.getAABB().handleCollision(platform);
+            player.getAABB().handleCollision(floor);
+            player.getAABB().display();
+            platform.display();
+            floor.display();
+
+
+            //        if (!timer.isTiming()) {
+            //            timer.reset();
+            //            timer.begin();
+            //            lava.setHeight(lavaHeight);
+            //            lava2.setHeight(lavaHeight-5);
+            //            lava3.setHeight(lavaHeight-10);
+            //        }
+            //        
+            //        control(); //manage user input
+
+            //        isDead(player.getBody()); //check to see if player is dead
+            //
+            //
+            //        //advance and draw physics
+            //        world.step();
+            //        world.draw();
+            //
+            lava.update(delta);
+            lava2.update(delta);
+            lava3.update(delta);
+            lava.display();
+            lava2.display();
+            lava3.display();
+            lava3.drawGradient();
+            //        
+            //
+            //        //manage platforms
+            //        plats.difficulty(timer); //increases difficulty(speed) as time goes by
+            //        plats.down(); //adjust platforms to move down
+            //        plats.cleanUp(lavaHeight); //any platforms under the lava are moved to the top
+            //
+            //        timer.update(); // call and draw timer
+            //        displayTime(450, 600);
+        }
+        break;
+    case GAMEOVERSCREEN:
         timer.halt();
         gameOver();
+        break;
     }
 }
 
