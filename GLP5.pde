@@ -252,7 +252,7 @@ void displayTime(int x, int y) {
 //----------------------------------------------------------------------------
 void draw() {
     float delta = frameTime.deltaTime();
-    //    println("FPS: " + frameRate);
+    println("FPS: " + frameRate);
 
 
     switch (gameState) {
@@ -265,7 +265,8 @@ void draw() {
             player.update(delta);
             player.getAABB().handleCollision(platform);
             player.getAABB().handleCollision(floor);
-            player.getAABB().display();
+//            player.getAABB().display();
+            player.display(delta);
             platform.display();
             floor.display();
 

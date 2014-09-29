@@ -15,9 +15,12 @@ class Player extends MovableEntity {
     int jumpCounter = 0;
     Animation runLeft; //animation object for walking left
     Animation runRight; //animation object for walking right
+    PImage spriteSheet;
+    
     Player() {
-        runRight = new Animation (3, "hr_sprite", "data/");
-        runLeft = new Animation (3, "hl_sprite", "data/");
+        spriteSheet = loadImage("playersheet.gif");
+        runRight = new Animation(spriteSheet, 32, 34, 1, 3, true);
+        runLeft = new Animation(spriteSheet, 32, 34, 1, 3, true);
         maxSpeedX = 800;//10;
         maxSpeedY = 550;
 
@@ -148,8 +151,13 @@ class Player extends MovableEntity {
         AABB.setPosition(AABB.getX() + velocity.x * deltaTime, AABB.getY() + velocity.y * deltaTime);
 //        println("Velocity y: " + velocity.y);
     }
-
+    
+    void display(float delta) {
+        image(runLeft.getFrame(runLeft.cycleFrame(delta)), AABB.getX(), AABB.getY());
+    }
+    
     void display () {
+        
     }
 }
 
