@@ -9,7 +9,6 @@ class Player extends MovableEntity {
 
     boolean isGravityAffected = true;
 
-    FBox boundingBox; //physics object that represents the player
     //boolean direction; //player is facing: right = true; left = false;
     float maxSpeedX, maxSpeedY;// xVelocity, yVelocity;//player velocity in x and y axes
     int jumpCounter = 0;
@@ -105,6 +104,15 @@ class Player extends MovableEntity {
         return isGravityAffected;
     } 
 
+    //method checks to see if character is dead
+    //and changes game state to game over if true
+    boolean isDead(float lavaHeight) {
+        if (AABB.getY()+AABB.getHeight() > height-lavaHeight) {
+            return true;
+        }
+        return false;
+    }
+
     void update(float deltaTime) {
         //move left
         if (left) {
@@ -155,8 +163,7 @@ class Player extends MovableEntity {
 
     void display () {
         image(sprite, AABB.getX(), AABB.getY());
-//        println(FrameTime.deltaTime());
-        
+        //        println(FrameTime.deltaTime());
     }
 }
 

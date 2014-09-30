@@ -21,7 +21,6 @@
 //It's a JBox2d wrapper for processing, very early alpha release. 
 //However it had much better documentation and an easier implementation
 //----------------------------------------------------------------------------
-import fisica.*;
 import ddf.minim.*;
 
 //Variables
@@ -34,7 +33,6 @@ PFont startFont; //our game font
 PImage bg, l_wall, r_wall, t_wall; //game environment images
 PImage hl_sprite, hr_sprite, hlj_sprite, hrj_sprite; //player sprites
 PImage logo, copyright; // title screen images
-FWorld world;//physics environment for the sketch
 
 Player player;
 
@@ -44,11 +42,11 @@ Lava lava3;// "
 float lavaHeight = 235;//level of lava for game play
 float titleScreen_lavaHeight = 270;// level of lava for title screen
 
-PlatformManager plats; //class to handle platform generation and modification
+//PlatformManager plats; //class to handle platform generation and modification
 
 final int TITLESCREEN = 0;
 final int GAMEPLAYSCREEN = 1;
-final int GAMEOVERSCREEN = 3;
+final int GAMEOVERSCREEN = 2;
 int gameState = TITLESCREEN; //3 game states: 0 = title screen; 1 = game play; 2 = game over;
 
 boolean left, right, jump;//booleans switches to see if an action is to be performed
@@ -61,7 +59,6 @@ BoxCollider platform;
 //----------------------------------------------------------------------------
 void setup() {
     size(500, 620, P2D);
-    Fisica.init(this); //sets up physics  
     //smooth(); //uncomment for better graphics (at least tino thinks so) 
     timer = new Timer();
     minim = new Minim(this);
@@ -90,24 +87,7 @@ void setup() {
     lava2 = new Lava(color(227, 56, 28), 0.003, lavaHeight-5);
     lava3 = new Lava(color(251, 102, 30), 0.004, lavaHeight-10);
 
-    //initialization specific to physics engine 
-    //-----------------------------------------
-    world = new FWorld();
-    world.setGravity(0, 800);
-    world.setEdges(color(255, 150, 0));
-    world.setGrabbable(false);
-    world.left.setWidth(26);
-    world.left.adjustPosition(18, 0);
-    world.left.attachImage(l_wall);
-    world.right.setWidth(26);
-    world.right.adjustPosition(-18, 0);
-    world.right.attachImage(r_wall);
-    world.top.setDrawable(false); 
-    //player
-    //    world.add(player.getBody());
-    //-----------------------------------------
-    plats = new PlatformManager(12, world);
-
+//    plats = new PlatformManager(12, world);
 
     //Test Stuff; Remove!
     platform = new BoxCollider(width/4, height/2, 30, 100);
@@ -157,8 +137,6 @@ void title() {
 //Displays GameOver screen
 void gameOver() {
     image(bg, 0, 0);
-    world.step();
-    world.draw();
     lava.setHeight(titleScreen_lavaHeight);
     lava2.setHeight(titleScreen_lavaHeight-5);
     lava3.setHeight(titleScreen_lavaHeight-10);
@@ -190,53 +168,6 @@ void gameOver() {
     text("Press R to try again", width/2, 270);
 }
 
-
-
-//method detects when collisons are started
-//if a collision involves the player
-//and an object and the player's feet touch
-//the surface of that object then 
-void contactStarted (FContact contact) {
-    //    FBox playerBody = this.player.getBody();
-    //    if (contact.getBody1() == playerBody || 
-    //        contact.getBody2() == playerBody) 
-    //    {
-    //        //is touching ground? *cough or beside the ground cough*
-    //        if ((playerBody.getY()+playerBody.getHeight()/2) - contact.getY() < 1) {
-    //            player.land();
-    //        }
-    //    }
-}
-
-//method checks to see if character is dead
-//and changes game state to game over if true
-void isDead(FBody target) {
-    if (target.getY() > height-lavaHeight) {
-        gameState = 2;
-    }
-}
-
-//method handles activation of any player actions
-//eg: if jump state is active then call the jump function
-//if control() is not called the player will be immobile.
-//void control() {
-//    //move left
-//    if (left) {
-//        player.left();
-//    }
-//
-//   //move right
-//    if (right) {
-//        player.right();
-//    }
-//
-//    //Jump 
-//    if (jump) {
-//        player.jump();
-//        jump=false;
-//    }
-//}
-
 void displayTime(int x, int y) {
     textFont(startFont, 25);
     fill(0);
@@ -251,7 +182,7 @@ void displayTime(int x, int y) {
 void draw() {
     float delta = FrameTime.deltaTime();
 //    println(delta);
-    println("FPS: " + frameRate);
+//    println("FPS: " + frameRate);
 
 
     switch (gameState) {
@@ -277,16 +208,8 @@ void draw() {
             //            lava2.setHeight(lavaHeight-5);
             //            lava3.setHeight(lavaHeight-10);
             //        }
-            //        
-            //        control(); //manage user input
 
             //        isDead(player.getBody()); //check to see if player is dead
-            //
-            //
-            //        //advance and draw physics
-            //        world.step();
-            //        world.draw();
-            //
             lava.update(delta);
             lava2.update(delta);
             lava3.update(delta);
@@ -295,7 +218,6 @@ void draw() {
             lava3.display();
             lava3.drawGradient();
             //        
-            //
             //        //manage platforms
             //        plats.difficulty(timer); //increases difficulty(speed) as time goes by
             //        plats.down(); //adjust platforms to move down
