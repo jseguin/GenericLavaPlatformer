@@ -11,13 +11,17 @@ abstract class MovableEntity implements Entity {
         velocity = new PVector();
         acceleration = new PVector();
     }
-
+    
+//    BoxCollider getAABB() {
+//     return AABB;   
+//    }
+    
     float getX () {
-        return AABB.x;
+        return AABB.getX();
     }
 
     float getY () {
-        return AABB.y;
+        return AABB.getY();
     }
 
     PVector getPosition() {

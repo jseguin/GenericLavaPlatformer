@@ -31,7 +31,6 @@ AudioPlayer song;
 PFont startFont; //our game font
 
 PImage bg, l_wall, r_wall, t_wall; //game environment images
-PImage hl_sprite, hr_sprite, hlj_sprite, hrj_sprite; //player sprites
 PImage logo, copyright; // title screen images
 
 Player player;
@@ -54,6 +53,7 @@ boolean left, right, jump;//booleans switches to see if an action is to be perfo
 //Test Stuff, Remove!
 BoxCollider floor;
 BoxCollider platform;
+Block testBlock;
 
 //Initialization - see ^Variables^ for what each variable does.
 //----------------------------------------------------------------------------
@@ -72,11 +72,6 @@ void setup() {
     bg = loadImage("data/background.gif");
     l_wall = loadImage ("data/wall_left.gif");
     r_wall = loadImage ("data/wall_right.gif");
-
-    hl_sprite = loadImage ("data/hl_sprite.gif");
-    hlj_sprite = loadImage ("data/hlj_sprite.gif");
-    hr_sprite = loadImage ("data/hr_sprite.gif");
-    hrj_sprite = loadImage ("data/hrj_sprite.gif");
     //-----------------------------------------
 
     //Player
@@ -92,6 +87,7 @@ void setup() {
     //Test Stuff; Remove!
     platform = new BoxCollider(width/4, height/2, 30, 100);
     floor = new BoxCollider(0, height/2+40, width, 30  );
+    testBlock = new Block (3);
 }
 
 //Methods
@@ -192,14 +188,19 @@ void draw() {
     case GAMEPLAYSCREEN:
         {
             image(bg, 0, 0); //draw background
-            player.update(delta);
+            
+            testBlock.update(delta);
+            
             player.getAABB().handleCollision(platform);
             player.getAABB().handleCollision(floor);
+            player.getAABB().handleCollision(testBlock.getAABB());
+            player.update(delta);
 //            player.getAABB().display();
             player.display();
             platform.display();
             floor.display();
-
+            testBlock.display();
+            
 
             //        if (!timer.isTiming()) {
             //            timer.reset();
