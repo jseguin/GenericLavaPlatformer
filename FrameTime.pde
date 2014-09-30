@@ -1,11 +1,12 @@
-class FrameTime {
+static class FrameTime {
+    
+    private static long startTimeMillis = System.currentTimeMillis();
+    private static float currentTime;
+    private static float previousTime;
+    private static float deltaTime;
 
-    float currentTime;
-    float previousTime;
-
-    float deltaTime() {
-        float deltaTime;
-        currentTime = millis()/1000f;
+    public static float deltaTime() {
+        currentTime = (System.currentTimeMillis() - startTimeMillis) / 1000f;
         deltaTime = currentTime - previousTime;
         previousTime = currentTime;
         return deltaTime;

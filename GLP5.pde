@@ -53,8 +53,6 @@ int gameState = TITLESCREEN; //3 game states: 0 = title screen; 1 = game play; 2
 
 boolean left, right, jump;//booleans switches to see if an action is to be performed
 
-FrameTime frameTime = new FrameTime();
-
 //Test Stuff, Remove!
 BoxCollider floor;
 BoxCollider platform;
@@ -134,9 +132,9 @@ void title() {
     lava.setHeight(titleScreen_lavaHeight);
     lava2.setHeight(titleScreen_lavaHeight-5);
     lava3.setHeight(titleScreen_lavaHeight-10);
-    lava.update(frameTime.deltaTime());
-    lava2.update(frameTime.deltaTime());
-    lava3.update(frameTime.deltaTime());
+    lava.update(FrameTime.deltaTime());
+    lava2.update(FrameTime.deltaTime());
+    lava3.update(FrameTime.deltaTime());
     lava.display();
     lava2.display();
     lava3.display();
@@ -164,9 +162,9 @@ void gameOver() {
     lava.setHeight(titleScreen_lavaHeight);
     lava2.setHeight(titleScreen_lavaHeight-5);
     lava3.setHeight(titleScreen_lavaHeight-10);
-    lava.update(frameTime.deltaTime());
-    lava2.update(frameTime.deltaTime());
-    lava3.update(frameTime.deltaTime());
+    lava.update(FrameTime.deltaTime());
+    lava2.update(FrameTime.deltaTime());
+    lava3.update(FrameTime.deltaTime());
     lava.display();
     lava2.display();
     lava3.display();
@@ -251,7 +249,8 @@ void displayTime(int x, int y) {
 //Output
 //----------------------------------------------------------------------------
 void draw() {
-    float delta = frameTime.deltaTime();
+    float delta = FrameTime.deltaTime();
+//    println(delta);
     println("FPS: " + frameRate);
 
 
@@ -266,7 +265,7 @@ void draw() {
             player.getAABB().handleCollision(platform);
             player.getAABB().handleCollision(floor);
 //            player.getAABB().display();
-            player.display(delta);
+            player.display();
             platform.display();
             floor.display();
 

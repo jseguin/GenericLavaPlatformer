@@ -13,15 +13,18 @@ class Player extends MovableEntity {
     //boolean direction; //player is facing: right = true; left = false;
     float maxSpeedX, maxSpeedY;// xVelocity, yVelocity;//player velocity in x and y axes
     int jumpCounter = 0;
-    Animation runLeft; //animation object for walking left
-    Animation runRight; //animation object for walking right
-    PImage spriteSheet;
-    
+    SpriteSheet.Animation runLeft; //animation object for walking left
+    SpriteSheet.Animation runRight; //animation object for walking right
+
+        SpriteSheet spriteSheet;
+    PImage sprite;
+
     Player() {
-        spriteSheet = loadImage("playersheet.gif");
-        runRight = new Animation(spriteSheet, 32, 34, 1, 3, true);
-        runLeft = new Animation(spriteSheet, 32, 34, 1, 3, true);
-        maxSpeedX = 800;//10;
+        spriteSheet = new SpriteSheet("playersheet.gif", 32, 34);
+        this.sprite = spriteSheet.getFrame(0);
+        runRight = spriteSheet.new Animation(6, 8, 0.15, true);
+        runLeft = spriteSheet.new Animation (1, 3, 0.15, true);
+        maxSpeedX = 800;
         maxSpeedY = 550;
 
         acceleration = new PVector(1000, 100);
@@ -37,6 +40,8 @@ class Player extends MovableEntity {
     void jump () {
         if (jumpCounter >= 0 && jumpCounter < 2) {
             velocity.y = -maxSpeedY;
+            if (direction == LEFT) sprite = spriteSheet.getFrame(4);
+            else if (direction == RIGHT) sprite = spriteSheet.getFrame(9);
         }
         jumpCounter++;
         jump=false;
@@ -50,15 +55,18 @@ class Player extends MovableEntity {
         direction = LEFT;
         if (AABB.getTouching()[LEFT] || AABB.getX() == AABB.getRange()[LEFT]) {
             velocity.x = 0;
+            sprite = (jumpCounter > 0) ? spriteSheet.getFrame(4) : runLeft.getCurrentFrame(deltaTime);
         } else {
             //If in air
             if (jumpCounter > 0) {
                 velocity.x = constrain(velocity.x - acceleration.x * deltaTime, -maxSpeedX, maxSpeedX);
+                sprite = spriteSheet.getFrame(4);
             } 
             //If on ground
             else {
                 //must accelerate upto 15% of maxSpeed left before direction change from right
                 velocity.x = constrain(velocity.x - acceleration.x * deltaTime, -maxSpeedX, maxSpeedX*0.15);
+                sprite = runLeft.getCurrentFrame(deltaTime);
             }
         }
     }
@@ -68,32 +76,25 @@ class Player extends MovableEntity {
 
         if (AABB.getTouching()[RIGHT] || AABB.getX() == AABB.getRange()[RIGHT]) {
             velocity.x = 0;
+            sprite = (jumpCounter > 0) ? spriteSheet.getFrame(9) : runRight.getCurrentFrame(deltaTime);
         } else {
 
             //If in air
             if (jumpCounter > 0) {
                 velocity.x = constrain(velocity.x + acceleration.x * deltaTime, -maxSpeedX, maxSpeedX);
+                sprite = spriteSheet.getFrame(9);
             } 
             //If on ground
             else {        
                 //must accelerate upto 15% of maxSpeed right before direction change from left  
                 velocity.x = constrain(velocity.x + acceleration.x * deltaTime, -maxSpeedX*0.15, maxSpeedX);
+                sprite = runRight.getCurrentFrame(deltaTime);
             }
         }
     }
 
     void land() {
-
         jumpCounter = 0; //reset jumpCounter so player can jump again
-
-        //reset sprites when player lands to standing sprite
-        //        if (direction == RIGHT) {
-        //            //set standing right sprite
-        //        }
-        //
-        //        if (direction == LEFT) {
-        //            //set standing left sprite
-        //        }
     }
 
     boolean isFalling() {
@@ -105,6 +106,7 @@ class Player extends MovableEntity {
     } 
 
     void update(float deltaTime) {
+        //move left
         if (left) {
             player.left(deltaTime);
         }
@@ -114,7 +116,7 @@ class Player extends MovableEntity {
             player.right(deltaTime);
         }
 
-
+        //stop movement
         if (!right && !left) {
             float decelerationX = 0;
             float airAccelerationScale = jumpCounter > 0 ? 0.5 : 1;
@@ -124,16 +126,16 @@ class Player extends MovableEntity {
             case RIGHT: 
                 decelerationX = -acceleration.x * frictionScale * airAccelerationScale;
                 velocity.x = constrain(velocity.x + decelerationX * deltaTime, 0, maxSpeedX);
+                if (jumpCounter == 0) sprite = spriteSheet.getFrame(5);
                 break;
             case LEFT: 
                 decelerationX = acceleration.x * frictionScale * airAccelerationScale;
                 velocity.x = constrain(velocity.x + decelerationX * deltaTime, -maxSpeedX, 0);
+                if (jumpCounter == 0) sprite = spriteSheet.getFrame(0);
                 break;
             }
         }
-        
-        
-        
+
         //Land - order important;
         if (AABB.getTouching()[DOWN]) {
             land();
@@ -144,19 +146,16 @@ class Player extends MovableEntity {
             player.jump();
         }
 
-             if (isGravityAffected) {
+        if (isGravityAffected) {
             applyGravity(new PVector(0, 1000), deltaTime);
         }
 
         AABB.setPosition(AABB.getX() + velocity.x * deltaTime, AABB.getY() + velocity.y * deltaTime);
-//        println("Velocity y: " + velocity.y);
     }
-    
-    void display(float delta) {
-        image(runLeft.getFrame(runLeft.cycleFrame(delta)), AABB.getX(), AABB.getY());
-    }
-    
+
     void display () {
+        image(sprite, AABB.getX(), AABB.getY());
+//        println(FrameTime.deltaTime());
         
     }
 }
