@@ -53,7 +53,7 @@ boolean left, right, jump;//booleans switches to see if an action is to be perfo
 //Test Stuff, Remove!
 BoxCollider floor;
 BoxCollider platform;
-Block testBlock;
+Platform testBlock;
 
 //Initialization - see ^Variables^ for what each variable does.
 //----------------------------------------------------------------------------
@@ -87,7 +87,7 @@ void setup() {
     //Test Stuff; Remove!
     platform = new BoxCollider(width/4, height/2, 30, 100);
     floor = new BoxCollider(0, height/2+40, width, 30  );
-    testBlock = new Block (3);
+    testBlock = new Platform (3);
 }
 
 //Methods
