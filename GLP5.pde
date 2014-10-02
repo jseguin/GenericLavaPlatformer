@@ -188,7 +188,7 @@ gameState = GAMEPLAYSCREEN;
         break;
     case GAMEPLAYSCREEN:
         {
-        if (countup > 0.5) {
+//        if (countup > 0.5) {
             image(bg, 0, 0); //draw background
             image(l_wall, 0,0);
             image(r_wall, width-r_wall.width, 0);
@@ -240,7 +240,7 @@ gameState = GAMEPLAYSCREEN;
             //        timer.update(); // call and draw timer
             //        displayTime(450, 600);
             countup = 0;
-        }
+//        }
         }
         break;
     case GAMEOVERSCREEN:
@@ -249,4 +249,3 @@ gameState = GAMEPLAYSCREEN;
         break;
     }
 }
-

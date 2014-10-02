@@ -53,7 +53,6 @@ abstract class MovableEntity implements Entity {
         velocity.add(gravity);
     }
 
-    abstract void update(float deltaTime);
-    abstract void display();
+    public abstract void update(float deltaTime);
+    public abstract void display();
 }
-

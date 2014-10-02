@@ -44,6 +44,7 @@ class Player extends MovableEntity {
             velocity.y = -maxSpeedY;
             if (direction == LEFT) sprite = spriteSheet.getFrame(4);
             else if (direction == RIGHT) sprite = spriteSheet.getFrame(9);
+            platformLocked = false;
         }
         jumpCounter++;
         jump=false;
@@ -55,7 +56,7 @@ class Player extends MovableEntity {
 
     void left(float deltaTime) { 
         direction = LEFT;
-        if (AABB.getTouching()[LEFT] || AABB.getX() == AABB.getRange()[LEFT]) {
+        if (AABB.getSidesTouching()[LEFT] || AABB.getX() == AABB.getRange()[LEFT]) {
             velocity.x = 0;
             sprite = (jumpCounter > 0) ? spriteSheet.getFrame(4) : runLeft.getCurrentFrame(deltaTime);
         } else {
@@ -76,7 +77,7 @@ class Player extends MovableEntity {
     void right (float deltaTime) { 
         direction = RIGHT;
 
-        if (AABB.getTouching()[RIGHT] || AABB.getX() == AABB.getRange()[RIGHT]) {
+        if (AABB.getSidesTouching()[RIGHT] || AABB.getX() == AABB.getRange()[RIGHT]) {
             velocity.x = 0;
             sprite = (jumpCounter > 0) ? spriteSheet.getFrame(9) : runRight.getCurrentFrame(deltaTime);
         } else {
@@ -148,9 +149,12 @@ class Player extends MovableEntity {
         }
 
         //Land - order important;
-        if (AABB.getTouching()[DOWN]) {
+        if (AABB.getSidesTouching()[DOWN]) {
             land();
+            player.platformLocked = true;
             velocity.y = 0;
+        } else {
+            platformLocked = false;
         }
 
         if (jump) {
@@ -160,8 +164,13 @@ class Player extends MovableEntity {
         if (isGravityAffected) {
             applyGravity(new PVector(0, 1000), deltaTime);
         }
-
+        
         AABB.setPosition(AABB.getX() + velocity.x * deltaTime, AABB.getY() + velocity.y * deltaTime);
+        
+        if(platformLocked) {
+            float platformPositionY = AABB.getObjectsTouching()[DOWN].getY();
+            setY(platformPositionY-AABB.getHeight());
+        }
     }
 
     void display () {
@@ -169,4 +178,3 @@ class Player extends MovableEntity {
         //        println(FrameTime.deltaTime());
     }
 }
-
