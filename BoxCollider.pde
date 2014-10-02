@@ -4,7 +4,13 @@ class BoxCollider {
     private float x, y, xRangeMin, xRangeMax, yRangeMin, yRangeMax;
     private int w, h;
     private boolean rightLock, leftLock, upLock, downLock;
+    private BoxCollider[] objectsTouching;
     private PVector correctionVector, b1_CentrePoint, b2_CentrePoint, centrePointDifference;
+    
+    private final int LEFT = 0;
+    private final int RIGHT = 1;
+    private final int UP = 2;
+    private final int DOWN = 3;
 
     BoxCollider (int w, int h) {
         this.w = w;
@@ -19,6 +25,8 @@ class BoxCollider {
         b1_CentrePoint = new PVector();
         b2_CentrePoint = new PVector();
         centrePointDifference = new PVector();
+        
+        objectsTouching = new BoxCollider[4];
     }
 
 
@@ -135,7 +143,13 @@ class BoxCollider {
         return false;
     }
 
-
+    void handleCollisionGroup(BoxCollider[] collisionGroup) {
+        clearLocks();
+        for (BoxCollider currentBox : collisionGroup) {
+            handleCollision(currentBox);   
+        }
+    }
+    
     boolean handleCollision(BoxCollider otherBox) {
         return handleCollision(this, otherBox);
     }

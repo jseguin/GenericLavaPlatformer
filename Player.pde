@@ -1,6 +1,8 @@
 class Player extends MovableEntity {
 
-    //private BoxCollider AABB;
+    private BoxCollider parentPlatform;
+    boolean platformLocked;
+    
     protected static final int LEFT = 0;
     protected static final int RIGHT = 1;
     protected static final int UP = 2;
@@ -12,10 +14,11 @@ class Player extends MovableEntity {
     //boolean direction; //player is facing: right = true; left = false;
     float maxSpeedX, maxSpeedY;// xVelocity, yVelocity;//player velocity in x and y axes
     int jumpCounter = 0;
+    
     SpriteSheet.Animation runLeft; //animation object for walking left
     SpriteSheet.Animation runRight; //animation object for walking right
+    SpriteSheet spriteSheet;
 
-        SpriteSheet spriteSheet;
     PImage sprite;
 
     Player() {
