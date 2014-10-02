@@ -1,3 +1,4 @@
+//Jonathan Seguin, 2014
 static class FrameTime {
     
     private static long startTimeMillis = System.currentTimeMillis();

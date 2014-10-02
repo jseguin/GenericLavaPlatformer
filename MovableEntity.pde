@@ -1,3 +1,4 @@
+//Jonathan Seguin, 2014
 abstract class MovableEntity implements Entity {
 
     protected BoxCollider AABB;
@@ -11,11 +12,11 @@ abstract class MovableEntity implements Entity {
         velocity = new PVector();
         acceleration = new PVector();
     }
-    
-//    BoxCollider getAABB() {
-//     return AABB;   
-//    }
-    
+
+    BoxCollider getAABB() {
+        return AABB;
+    }
+
     float getX () {
         return AABB.getX();
     }
@@ -56,3 +57,4 @@ abstract class MovableEntity implements Entity {
     public abstract void update(float deltaTime);
     public abstract void display();
 }
+

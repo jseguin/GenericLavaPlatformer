@@ -1,8 +1,4 @@
-/****************************************************************************
- * Author: Jonathan Seguin, Konstantino Kapetaneas, Winnie Kwan
- * Last Modified: April 21st 2010
- * Final Project
- ****************************************************************************/
+//Jonathan Seguin, 2014
 class SpriteSheet {
 
 
@@ -61,7 +57,7 @@ class SpriteSheet {
         private float frameDelay = 0.15; //delay between frames in seconds
         private float tick;
         boolean reversing, isReversible;
-        private int frame, numFrames, startFrame, endFrame; // current frame, total number of frames
+        private int frame, numFrames, startFrame, endFrame;
 
         Animation (int startFrame, int endFrame, float frameDelay, boolean isReversible) {
             this.startFrame = frame = startFrame;
@@ -89,7 +85,7 @@ class SpriteSheet {
 
                 tick = 0;
             }
-//            println("Frame = " + frame);
+
             return getFrame(frame);
         }
     }

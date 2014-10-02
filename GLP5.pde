@@ -177,10 +177,6 @@ float countup;
 //----------------------------------------------------------------------------
 void draw() {
     float delta = FrameTime.deltaTime();
-    countup += delta;
-//    println(delta);
-//    println("FPS: " + frameRate);
-gameState = GAMEPLAYSCREEN;
 
     switch (gameState) {
     case TITLESCREEN:
@@ -188,7 +184,6 @@ gameState = GAMEPLAYSCREEN;
         break;
     case GAMEPLAYSCREEN:
         {
-//        if (countup > 0.5) {
             image(bg, 0, 0); //draw background
             image(l_wall, 0,0);
             image(r_wall, width-r_wall.width, 0);
@@ -203,8 +198,6 @@ gameState = GAMEPLAYSCREEN;
             player.getAABB().handleCollision(platform);
             player.getAABB().handleCollision(floor);
             player.getAABB().handleCollision(testBlock.getAABB());
-            
-//            player.getAABB().display();
             player.display();
             platform.display();
             floor.display();
@@ -239,8 +232,6 @@ gameState = GAMEPLAYSCREEN;
             //
             //        timer.update(); // call and draw timer
             //        displayTime(450, 600);
-            countup = 0;
-//        }
         }
         break;
     case GAMEOVERSCREEN:

@@ -1,3 +1,4 @@
+//Jonathan Seguin, 2014
 class Platform extends MovableEntity {
 
     private int blockWidth, blockHeight, numBlocks, platformWidth;
@@ -19,10 +20,6 @@ class Platform extends MovableEntity {
             platformSprite.image(blockSprite, i * blockWidth, 0);
         } 
         platformSprite.endDraw();
-    }
-    
-    BoxCollider getAABB() {
-        return AABB;
     }
 
     //gets the x position of the last block in the

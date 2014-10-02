@@ -1,8 +1,4 @@
-/****************************************************************************
- * Author: Jonathan Seguin, Konstantino Kapetaneas, Winnie Kwan
- * Last Modified: April 21st 2010
- * Final Project
- ****************************************************************************/
+//Jonathan Seguin, 2014
 class Lava {
 
     float lavaHeight = height/4;

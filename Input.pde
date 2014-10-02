@@ -1,3 +1,4 @@
+//Jonathan Seguin, 2014
 boolean jumpInputLocked = false;
 
 void keyPressed() {

@@ -1,25 +1,21 @@
+//Jonathan Seguin, 2014
 class Player extends MovableEntity {
 
-    private BoxCollider parentPlatform;
-    boolean platformLocked;
-    
     protected static final int LEFT = 0;
     protected static final int RIGHT = 1;
     protected static final int UP = 2;
     protected static final int DOWN = 3;
     protected int direction;
-
-    boolean isGravityAffected = true;
-
-    //boolean direction; //player is facing: right = true; left = false;
-    float maxSpeedX, maxSpeedY;// xVelocity, yVelocity;//player velocity in x and y axes
-    int jumpCounter = 0;
     
-    SpriteSheet.Animation runLeft; //animation object for walking left
-    SpriteSheet.Animation runRight; //animation object for walking right
-    SpriteSheet spriteSheet;
-
-    PImage sprite;
+    private boolean platformLocked;
+    private boolean isGravityAffected = true;
+    private float maxSpeedX, maxSpeedY;
+    private int jumpCounter = 0;
+    
+    private SpriteSheet.Animation runLeft; //animation object for walking left
+    private SpriteSheet.Animation runRight; //animation object for walking right
+    private SpriteSheet spriteSheet;
+    private PImage sprite;
 
     Player() {
         spriteSheet = new SpriteSheet("playersheet.gif", 32, 34);
@@ -28,15 +24,8 @@ class Player extends MovableEntity {
         runLeft = spriteSheet.new Animation (1, 3, 0.15, true);
         maxSpeedX = 800;
         maxSpeedY = 550;
-
         acceleration = new PVector(1000, 100);
-
-        //AABB
         AABB = new BoxCollider(width/2, height/2, 32, 34);
-    }
-
-    BoxCollider getAABB() {
-        return AABB;
     }
 
     void jump () {
@@ -97,7 +86,8 @@ class Player extends MovableEntity {
     }
 
     void land() {
-        jumpCounter = 0; //reset jumpCounter so player can jump again
+        //reset jumpCounter so player can jump again
+        jumpCounter = 0; 
     }
 
     boolean isFalling() {
@@ -118,12 +108,11 @@ class Player extends MovableEntity {
     }
 
     void update(float deltaTime) {
-        //move left
+        
         if (left) {
             player.left(deltaTime);
         }
 
-        //move right
         if (right) {
             player.right(deltaTime);
         }
@@ -148,10 +137,9 @@ class Player extends MovableEntity {
             }
         }
 
-        //Land - order important;
         if (AABB.getSidesTouching()[DOWN]) {
             land();
-            player.platformLocked = true;
+            platformLocked = true;
             velocity.y = 0;
         } else {
             platformLocked = false;
@@ -165,16 +153,17 @@ class Player extends MovableEntity {
             applyGravity(new PVector(0, 1000), deltaTime);
         }
         
+        //Set Position
         AABB.setPosition(AABB.getX() + velocity.x * deltaTime, AABB.getY() + velocity.y * deltaTime);
         
+        //Lock Y position to platform if locked
         if(platformLocked) {
             float platformPositionY = AABB.getObjectsTouching()[DOWN].getY();
-            setY(platformPositionY-AABB.getHeight());
+            setY(platformPositionY - AABB.getHeight());
         }
     }
 
     void display () {
         image(sprite, AABB.getX(), AABB.getY());
-        //        println(FrameTime.deltaTime());
     }
 }
