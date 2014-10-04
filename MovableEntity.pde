@@ -3,14 +3,13 @@ abstract class MovableEntity implements Entity {
 
     protected BoxCollider AABB;
     protected PVector velocity, acceleration;
-    private boolean isGravityAffected;
-
-    abstract boolean isFalling();
-    abstract boolean isGravityAffected();
+    protected boolean isGravityAffected;
+    protected PVector gravity;
 
     public MovableEntity () {
         velocity = new PVector();
         acceleration = new PVector();
+        gravity = new PVector();
     }
 
     BoxCollider getAABB() {
@@ -49,12 +48,21 @@ abstract class MovableEntity implements Entity {
         return velocity;
     }
 
-    void applyGravity(PVector gravity, float deltaTime) {
-        gravity.mult(deltaTime);
-        velocity.add(gravity);
+    void setGravity(float x, float y) {
+        gravity.set(x,y);
+    }
+    
+    void applyGravity(float deltaTime) {
+        PVector g = PVector.mult(gravity, deltaTime);
+        velocity.add(g);
     }
 
+    public abstract boolean isFalling();
+
+    public abstract boolean isGravityAffected();
+
     public abstract void update(float deltaTime);
+
     public abstract void display();
 }
 

@@ -2,6 +2,7 @@
 class Platform extends MovableEntity {
 
     private int blockWidth, blockHeight, numBlocks, platformWidth;
+    private float maxSpeedY;
 
     PImage blockSprite;
     PGraphics platformSprite;
@@ -13,13 +14,23 @@ class Platform extends MovableEntity {
         this.numBlocks = constrain (numBlocks, 1, 21);
         this.platformWidth = blockWidth*numBlocks;
         AABB = new BoxCollider(platformWidth, blockHeight);
-        
+
         platformSprite = createGraphics(platformWidth, blockHeight, P2D);
         platformSprite.beginDraw();
         for (int i = 0; i < numBlocks; i++) {
             platformSprite.image(blockSprite, i * blockWidth, 0);
         } 
         platformSprite.endDraw();
+        
+        gravity.set(0,10);
+    }
+
+    float getHeight() {
+        return AABB.getHeight();
+    }
+
+    float getWidth() {
+        return AABB.getWidth();
     }
 
     //gets the x position of the last block in the
@@ -34,11 +45,17 @@ class Platform extends MovableEntity {
     }
 
     boolean isGravityAffected() {
-        return false;
+        return isGravityAffected;
+    }
+
+    void toggleGravity(boolean state) {
+        isGravityAffected = state;
     }
 
     void update(float deltaTime) {
-        applyGravity(new PVector(0,10), deltaTime);
+        if (isGravityAffected) {
+            applyGravity(deltaTime);
+        }
         AABB.setPosition(AABB.getX() + velocity.x * deltaTime, AABB.getY() + velocity.y * deltaTime);
     }
 
@@ -46,3 +63,4 @@ class Platform extends MovableEntity {
         image(platformSprite, AABB.getX(), AABB.getY());
     }
 }
+

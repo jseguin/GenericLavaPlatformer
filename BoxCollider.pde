@@ -148,7 +148,7 @@ class BoxCollider {
 
     void handleCollisionGroup(BoxCollider[] collisionGroup) {
 
-        clearLocks();
+//        clearLocks();
 
         for (BoxCollider currentBox : collisionGroup) {
             handleCollision(currentBox);

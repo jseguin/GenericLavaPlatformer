@@ -30,7 +30,7 @@ Minim minim;
 AudioPlayer song;
 PFont startFont; //our game font
 
-PImage bg, l_wall, r_wall, t_wall; //game environment images
+PImage bg, l_wall, r_wall, t_wall, block; //game environment images
 PImage logo, copyright; // title screen images
 
 Player player;
@@ -38,7 +38,7 @@ Player player;
 Lava lava; //objects to draw layered lava
 Lava lava2;// "
 Lava lava3;// "
-float lavaHeight = 235;//level of lava for game play
+float lavaHeight = 200;//level of lava for game play
 float titleScreen_lavaHeight = 270;// level of lava for title screen
 
 //PlatformManager plats; //class to handle platform generation and modification
@@ -53,13 +53,13 @@ boolean left, right, jump;//booleans switches to see if an action is to be perfo
 //Test Stuff, Remove!
 BoxCollider floor;
 BoxCollider platform;
-Platform testBlock;
+MultiSpawn platformManager;
 
 //Initialization - see ^Variables^ for what each variable does.
 //----------------------------------------------------------------------------
 void setup() {
-    size(500, 620, P2D);
-    //smooth(); //uncomment for better graphics (at least tino thinks so) 
+    size(600, 620, P2D);
+    //    smooth(); //uncomment for better graphics (at least tino thinks so) 
     timer = new Timer();
     minim = new Minim(this);
     song = minim.loadFile("music.mp3");
@@ -72,6 +72,7 @@ void setup() {
     bg = loadImage("data/background.gif");
     l_wall = loadImage ("data/wall_left.gif");
     r_wall = loadImage ("data/wall_right.gif");
+    block = loadImage("plat_block.gif");
     //-----------------------------------------
 
     //Player
@@ -82,12 +83,12 @@ void setup() {
     lava2 = new Lava(color(227, 56, 28), 0.003, lavaHeight-5);
     lava3 = new Lava(color(251, 102, 30), 0.004, lavaHeight-10);
 
-//    plats = new PlatformManager(12, world);
+    //    plats = new PlatformManager(12, world);
 
     //Test Stuff; Remove!
     platform = new BoxCollider(width/4, height/2, 30, 100);
     floor = new BoxCollider(0, height/2+40, width, 30  );
-    testBlock = new Platform (3);
+    platformManager = new MultiSpawn(5);
 }
 
 //Methods
@@ -104,7 +105,7 @@ void stop() {
 //method displays title screen
 void title() {
     //  background(150);
-    image(bg, 0, 0);
+    image(bg, 0, 0, width, height);
     lava.setHeight(titleScreen_lavaHeight);
     lava2.setHeight(titleScreen_lavaHeight-5);
     lava3.setHeight(titleScreen_lavaHeight-10);
@@ -132,7 +133,7 @@ void title() {
 
 //Displays GameOver screen
 void gameOver() {
-    image(bg, 0, 0);
+    image(bg, 0, 0, width, height);
     lava.setHeight(titleScreen_lavaHeight);
     lava2.setHeight(titleScreen_lavaHeight-5);
     lava3.setHeight(titleScreen_lavaHeight-10);
@@ -172,11 +173,9 @@ void displayTime(int x, int y) {
     text(timer.toString(), x, y);
 }
 
-float countup;
-//Output
-//----------------------------------------------------------------------------
 void draw() {
     float delta = FrameTime.deltaTime();
+    //    println("FPS: " + frameRate);
 
     switch (gameState) {
     case TITLESCREEN:
@@ -184,39 +183,38 @@ void draw() {
         break;
     case GAMEPLAYSCREEN:
         {
-            image(bg, 0, 0); //draw background
-            image(l_wall, 0,0);
+            if (!timer.isTiming()) {
+                timer.reset();
+                timer.begin();
+                lava.setHeight(lavaHeight);
+                lava2.setHeight(lavaHeight-5);
+                lava3.setHeight(lavaHeight-10);
+            }
+
+            image(bg, 0, 0, width, height); //draw background
+            image(l_wall, 0, 0);
             image(r_wall, width-r_wall.width, 0);
-            
+
             //Update Platforms
-            testBlock.update(delta);
-            
+            //            spawner.update(delta);
+            platformManager.update(delta);
+
             //Update Player
             player.update(delta);
-            
+
             //Resovle Collisions
+            for (Platform p : platformManager.getOnScreenPlatforms ()) {
+                player.getAABB().handleCollision(p.getAABB());
+                p.display();
+            }
+            
             player.getAABB().handleCollision(platform);
             player.getAABB().handleCollision(floor);
-            player.getAABB().handleCollision(testBlock.getAABB());
+
             player.display();
             platform.display();
             floor.display();
-            testBlock.display();
-            
-            if (testBlock.getY() > height-lavaHeight) {
-                testBlock.setY(0);
-            }
-            
 
-            //        if (!timer.isTiming()) {
-            //            timer.reset();
-            //            timer.begin();
-            //            lava.setHeight(lavaHeight);
-            //            lava2.setHeight(lavaHeight-5);
-            //            lava3.setHeight(lavaHeight-10);
-            //        }
-
-            //        isDead(player.getBody()); //check to see if player is dead
             lava.update(delta);
             lava2.update(delta);
             lava3.update(delta);
@@ -224,14 +222,9 @@ void draw() {
             lava2.display();
             lava3.display();
             lava3.drawGradient();
-            //        
-            //        //manage platforms
-            //        plats.difficulty(timer); //increases difficulty(speed) as time goes by
-            //        plats.down(); //adjust platforms to move down
-            //        plats.cleanUp(lavaHeight); //any platforms under the lava are moved to the top
-            //
-            //        timer.update(); // call and draw timer
-            //        displayTime(450, 600);
+
+            timer.update(); // call and draw timer
+            displayTime(450, 600);
         }
         break;
     case GAMEOVERSCREEN:
@@ -240,3 +233,4 @@ void draw() {
         break;
     }
 }
+

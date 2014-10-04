@@ -8,6 +8,7 @@ class Player extends MovableEntity {
     protected int direction;
     
     private boolean platformLocked;
+    private boolean doubleJumpEnabled;
     private boolean isGravityAffected = true;
     private float maxSpeedX, maxSpeedY;
     private int jumpCounter = 0;
@@ -26,6 +27,7 @@ class Player extends MovableEntity {
         maxSpeedY = 550;
         acceleration = new PVector(1000, 100);
         AABB = new BoxCollider(width/2, height/2, 32, 34);
+        gravity.set(0,1000);
     }
 
     void jump () {
@@ -150,7 +152,7 @@ class Player extends MovableEntity {
         }
 
         if (isGravityAffected) {
-            applyGravity(new PVector(0, 1000), deltaTime);
+            applyGravity(deltaTime);
         }
         
         //Set Position

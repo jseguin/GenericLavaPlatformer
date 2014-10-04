@@ -6,6 +6,7 @@ class Lava {
     final float time = 0.01; // represents a second dimension of time in the noise calculation
     //  float current;//current noise calculation
     color lavaColour; // lava colour
+    int strokeThickness = 1;
     float[] noiseLevels;
     color[] gradientArray = {
         color(120, 42, 5), 
@@ -24,7 +25,7 @@ class Lava {
         noiseLevels = new float[width];
         this.lavaHeight = lavaHeight;
     }
-    
+
     //Note: lava height is from the bottom of the sketch, not the top.
     void setHeight (float lavaHeight) {
         this.lavaHeight = lavaHeight;
@@ -49,8 +50,9 @@ class Lava {
     //different heights along the x-axis. heights follow a noise
     //pattern for smooth transitions between heights.
     void display() {
-        for (int x = 0; x < width; x++) {
-            stroke(lavaColour);
+        strokeWeight(strokeThickness);
+        stroke(lavaColour);
+        for (int x = 0; x < width; x+=strokeThickness) {
             line (x, height, x, height - lavaHeight + noiseLevels[x]);
         }
     }

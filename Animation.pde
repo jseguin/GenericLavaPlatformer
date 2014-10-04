@@ -1,7 +1,6 @@
 //Jonathan Seguin, 2014
 class SpriteSheet {
 
-
     // Sprite Sheet
     //    PImage[] sprites;
     //    String prefix; //name of the image file
@@ -18,7 +17,6 @@ class SpriteSheet {
     //            sprite[i] = loadImage(path+prefix+nf(i, 2)+".gif");
     //        }
     //    }
-    
     
     SpriteSheet (String sheetPath, int frameWidth, int frameHeight) {
         this(frameWidth, frameHeight);
