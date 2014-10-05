@@ -11,19 +11,12 @@ class Platform extends MovableEntity {
         blockSprite = loadImage ("data/plat_block.gif");
         this.blockWidth = blockSprite.width;//28;
         this.blockHeight = blockSprite.height;//26;
-        this.numBlocks = constrain (numBlocks, 1, 21);
+        this.numBlocks = numBlocks;
         this.platformWidth = blockWidth*numBlocks;
         AABB = new BoxCollider(platformWidth, blockHeight);
-
-        platformSprite = createGraphics(platformWidth, blockHeight, P2D);
-        platformSprite.beginDraw();
-        for (int i = 0; i < numBlocks; i++) {
-            platformSprite.image(blockSprite, i * blockWidth, 0);
-        } 
-        platformSprite.endDraw();
-        
+        createPlatformImage();
         gravity.set(0,10);
-    }
+    }    
 
     float getHeight() {
         return AABB.getHeight();
@@ -32,7 +25,25 @@ class Platform extends MovableEntity {
     float getWidth() {
         return AABB.getWidth();
     }
-
+    
+    void resizePlatform(int numBlocks) {
+        if (this.numBlocks != numBlocks) {
+            this.numBlocks = numBlocks;
+            this.platformWidth = numBlocks * blockWidth;
+            AABB.resize(platformWidth, blockHeight);
+            createPlatformImage();
+        }
+    }
+    
+    private void createPlatformImage() {
+        platformSprite = createGraphics(platformWidth, blockHeight, P2D);
+        platformSprite.beginDraw();
+        for (int i = 0; i < numBlocks; i++) {
+            platformSprite.image(blockSprite, i * blockWidth, 0);
+        } 
+        platformSprite.endDraw();   
+    }
+    
     //gets the x position of the last block in the
     //platform.
     //[  |  |  ]* <- endX()

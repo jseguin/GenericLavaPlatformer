@@ -75,6 +75,22 @@ class BoxCollider {
         return new PVector(x, y);
     }
 
+    void resize(int w, int h) {
+
+        if (w > this.w) {
+            xRangeMax -= (w - this.w);
+        } else if (w < this.w) {
+            xRangeMax += this.w - w;
+        }
+
+        if (h > this.h) {
+            yRangeMax -= (h - this.h);
+        } else if (h < this.h) {
+            yRangeMax += this.h - h;
+        } 
+        this.w = w;
+        this.h = h;
+    }
 
     void setX(float x) {
         float minRange = xRangeMin, maxRange = xRangeMax;
@@ -148,7 +164,7 @@ class BoxCollider {
 
     void handleCollisionGroup(BoxCollider[] collisionGroup) {
 
-//        clearLocks();
+        //        clearLocks();
 
         for (BoxCollider currentBox : collisionGroup) {
             handleCollision(currentBox);

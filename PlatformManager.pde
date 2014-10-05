@@ -4,8 +4,10 @@ class MultiSpawn {
     ArrayList<Platform> platformPool;
     float interval, stateTime, maxPlatformWidth, blockWidth, blockHeight, playerWidth;
     float difficultyLevel = 4;
+    float maxDifficulty = 15;
     float jumpUnit = 120;
-    
+    Platform floor;
+
     MultiSpawn (int numSpawners, int xRangeMin, int xRangeMax, int playerWidth) {
 
         spawners = new ArrayList<PlatformSpawner>();
@@ -31,19 +33,26 @@ class MultiSpawn {
         //---
 
         for (int i = 0; i < numSpawners; i++) {
-            
+
             addSpawner(
-                xRangeMin + (columnWidth*i + playerWidth*i), 
-                xRangeMin + columnWidth + (columnWidth*i + playerWidth*i), 
-                interval
-            );
-            
-//            println(
-//                "Column xstart: " + (xRangeMin + (columnWidth*i + playerWidth*i)) + 
-//                ", Column End: " + (xRangeMin + columnWidth + (columnWidth*i + playerWidth*i)) + 
-//                ", Total Width: " + columnWidth
-//            );
+            xRangeMin + (columnWidth*i + playerWidth*i), 
+            xRangeMin + columnWidth + (columnWidth*i + playerWidth*i), 
+            interval
+                );
+
+            //            println(
+            //                "Column xstart: " + (xRangeMin + (columnWidth*i + playerWidth*i)) + 
+            //                ", Column End: " + (xRangeMin + columnWidth + (columnWidth*i + playerWidth*i)) + 
+            //                ", Total Width: " + columnWidth
+            //            );
         }
+
+        floor = new Platform(ceil(width/blockWidth));
+        floor.getAABB().setRange(0, width+floor.getWidth(), 0, height);
+        floor.setPosition(0, height/3);
+        floor.toggleGravity(true);
+        floor.setGravity(0,1);
+        platformsOnScreen.add(floor);
     }
 
     void addSpawner(float xMin, float xMax, float interval) {
@@ -55,13 +64,25 @@ class MultiSpawn {
     }
 
     Platform getInactivePlatform() {
-        for (Platform p : platformPool) {  
-            return p;
+        int minBlocks = 1;//round(map(difficultyLevel, 1, maxDifficulty, 2, 1));
+        int maxBlocks = round(map(difficultyLevel, 1, maxDifficulty, 4, 2));//difficulty <= maxDifficulty/2 ? 4 : 2;
+        int numBlocks = round(random(minBlocks, maxBlocks));
+
+        for (int i = 0; i < platformPool.size (); i++) {
+            Platform p = platformPool.get(i);
+            if (i == platformPool.size()-1) {
+                p.resizePlatform(numBlocks);
+                return p;
+            } else {
+                if (p.getWidth() == blockWidth * numBlocks) {
+                    return p;
+                }
+            }
         }
-        int numBlocks = round(random(2, 4));
+
         Platform p = new Platform(numBlocks);
         platformPool.add(p);
-        println("created extra platform");
+        //        println("created extra platform");
         return p;
     }
 
@@ -69,9 +90,9 @@ class MultiSpawn {
         Platform p = getInactivePlatform();
 
         float x = random(spawner.xMin, spawner.xMax-p.getWidth());
-        float y = -p.getHeight();
+        float y = random(-jumpUnit/2, -p.getHeight());
 
-        p.getAABB().setRange(0, width, -p.getHeight(), height);
+        p.getAABB().setRange(0, width, y, height);
         p.setPosition(x, y);
         p.toggleGravity(true);
         p.setGravity(0, 10 * difficultyLevel);
@@ -85,25 +106,50 @@ class MultiSpawn {
         platformPool.add(p);
         p.toggleGravity(false);
     }
-    
+
     void setDifficulty(float timePassed) {
-       difficultyLevel = map(timePassed, 0, 600, 1, 20);
+        float newDifficulty = map(timePassed, 0, 195, 1, maxDifficulty);
+        if (newDifficulty != difficultyLevel) {
+            difficultyLevel = newDifficulty;
+            for (Platform p : platformsOnScreen) {
+                p.setGravity(0, 10 * difficultyLevel);
+            }
+        }
     }
 
     void update(float deltaTime) {
         stateTime += deltaTime;
+        if (floor.getY() > height - 235) {
+            platformsOnScreen.remove(floor);
+        }
 
         if (stateTime >= interval) {
+            boolean hasSpawned = false;
             for (PlatformSpawner spawner : spawners) {
 
-                if (round(random(0, 3)) == 1) {
+                float oddsFor = map(difficultyLevel, 1, maxDifficulty, 3, 1f);
+                float chance = oddsFor/spawners.size();
+
+                if (random(0, 1) <= chance) { //Simplify
 
                     if (spawner.getLastSpawned() == null) {
                         spawnPlatform(spawner);
+                        hasSpawned = true;
                     } else {
                         if (spawner.getLastSpawned().getY() > jumpUnit) { 
                             spawnPlatform(spawner);
+                            hasSpawned = true;
                         }
+                    }
+                }
+            }
+            if (hasSpawned == false) {
+                PlatformSpawner spawner = spawners.get(round(random(0, spawners.size()-1)));
+                if (spawner.getLastSpawned() == null) {
+                    spawnPlatform(spawner);
+                } else {
+                    if (spawner.getLastSpawned().getY() > jumpUnit) {
+                        spawnPlatform(spawner);
                     }
                 }
             }
