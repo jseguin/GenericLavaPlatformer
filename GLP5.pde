@@ -58,7 +58,7 @@ MultiSpawn platformManager;
 //Initialization - see ^Variables^ for what each variable does.
 //----------------------------------------------------------------------------
 void setup() {
-    size(600, 620, P2D);
+    size(632, 620, P2D);
     //    smooth(); //uncomment for better graphics (at least tino thinks so) 
     timer = new Timer();
     minim = new Minim(this);
@@ -88,7 +88,7 @@ void setup() {
     //Test Stuff; Remove!
     platform = new BoxCollider(width/4, height/2, 30, 100);
     floor = new BoxCollider(0, height/2+40, width, 30  );
-    platformManager = new MultiSpawn(5);
+    platformManager = new MultiSpawn(4, 0 + l_wall.width, width - r_wall.width, int(player.getAABB().getWidth()));
 }
 
 //Methods
@@ -207,7 +207,7 @@ void draw() {
                 player.getAABB().handleCollision(p.getAABB());
                 p.display();
             }
-            
+
             player.getAABB().handleCollision(platform);
             player.getAABB().handleCollision(floor);
 
@@ -224,6 +224,7 @@ void draw() {
             lava3.drawGradient();
 
             timer.update(); // call and draw timer
+            platformManager.setDifficulty(timer.getTimePassed());
             displayTime(450, 600);
         }
         break;

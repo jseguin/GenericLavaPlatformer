@@ -50,13 +50,17 @@ class Platform extends MovableEntity {
 
     void toggleGravity(boolean state) {
         isGravityAffected = state;
+        if (isGravityAffected) {
+            velocity = gravity;
+        } else {
+            velocity.set(0,0);
+        }
     }
 
     void update(float deltaTime) {
         if (isGravityAffected) {
-            applyGravity(deltaTime);
+            AABB.setPosition(AABB.getX() + velocity.x * deltaTime, AABB.getY() + velocity.y * deltaTime);
         }
-        AABB.setPosition(AABB.getX() + velocity.x * deltaTime, AABB.getY() + velocity.y * deltaTime);
     }
 
     void display() {
