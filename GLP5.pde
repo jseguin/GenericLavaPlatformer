@@ -152,18 +152,18 @@ void gameOver() {
 
     //Shadow:
     fill(0);
-    text("GAME OVER", width/2, 200);
+    text("GAME OVER", width/2f, height/3f);
 
     //Actual Text:
     fill(222, 255, 122);
-    text("GAME OVER", width/2, 202);
+    text("GAME OVER", width/2f, height/3f + 2);
     textFont(startFont, 25);
     fill(0);
-    text("Your score: " + timer.toString() + "", width/2, 232);
-    text("Press R to try again", width/2, 272);
+    text("Your score: " + timer.toString() + "", width/2, height*.37f + 2);
+    text("Press R to try again", width/2, height *.44f + 2);
     fill(255);
-    text("Your score: " + timer.toString() + "", width/2, 230);
-    text("Press R to try again", width/2, 270);
+    text("Your score: " + timer.toString() + "", width/2, height * .37f);
+    text("Press R to try again", width/2, height * .44f);
 }
 
 void displayTime(int x, int y) {
@@ -177,6 +177,7 @@ void displayTime(int x, int y) {
 void draw() {
     float delta = FrameTime.deltaTime();
     //    println("FPS: " + frameRate);
+//    gameState = GAMEOVERSCREEN;
 
     switch (gameState) {
     case TITLESCREEN:
