@@ -5,6 +5,7 @@ void keyPressed() {
     switch (gameState) {
     case TITLESCREEN:
         gameState = GAMEPLAYSCREEN;
+        timer.begin();
         break;
 
     case GAMEPLAYSCREEN:
@@ -21,10 +22,8 @@ void keyPressed() {
 
     case GAMEOVERSCREEN:
         if (key == 'r' || key == 'R') {
-            song.close();
-            setup();
+            reset();
             gameState = GAMEPLAYSCREEN;
-            song.play(1500);
         }
         break;
     }

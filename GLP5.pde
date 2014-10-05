@@ -56,6 +56,7 @@ void setup() {
     timer = new Timer();
     minim = new Minim(this);
     song = minim.loadFile("music.mp3");
+    song.loop();
     song.play();
     startFont = loadFont("pixelfont.vlw");
 
@@ -96,7 +97,6 @@ void stop() {
 
 //method displays title screen
 void title() {
-    //  background(150);
     image(bg, 0, 0, width, height);
     lava.setHeight(titleScreen_lavaHeight);
     lava2.setHeight(titleScreen_lavaHeight-5);
@@ -126,6 +126,8 @@ void title() {
 //Displays GameOver screen
 void gameOver() {
     image(bg, 0, 0, width, height);
+    image(l_wall, 0, 0);
+    image(r_wall, width-r_wall.width, 0);
     lava.setHeight(titleScreen_lavaHeight);
     lava2.setHeight(titleScreen_lavaHeight-5);
     lava3.setHeight(titleScreen_lavaHeight-10);
@@ -157,12 +159,25 @@ void gameOver() {
     text("Press R to try again", width/2, height * .44f);
 }
 
-void displayTime(int x, int y) {
+void displayTime(float x, float y) {
     textFont(startFont, 25);
     fill(0);
     text(timer.toString(), x, y+2);
     fill(color(222, 255, 122));
     text(timer.toString(), x, y);
+}
+
+void reset() {
+    song.rewind();
+    song.play(1500);
+    player.setPosition(width/2 - player.getAABB().getWidth()/2, height/4 + player.getAABB().getHeight());
+    player.setVelocity(0, 0);
+    platformManager.reset();
+    timer.reset();
+    timer.begin();
+    lava.setHeight(lavaHeight);
+    lava2.setHeight(lavaHeight-5);
+    lava3.setHeight(lavaHeight-10);
 }
 
 void draw() {
@@ -176,14 +191,6 @@ void draw() {
         break;
     case GAMEPLAYSCREEN:
         {
-            if (!timer.isTiming()) {
-                timer.reset();
-                timer.begin();
-                lava.setHeight(lavaHeight);
-                lava2.setHeight(lavaHeight-5);
-                lava3.setHeight(lavaHeight-10);
-            }
-
             image(bg, 0, 0, width, height); //draw background
 
 
@@ -193,7 +200,7 @@ void draw() {
             //Update Player
             player.update(delta);
 
-//            if (player.isDead(lavaHeight)) gameState = GAMEOVERSCREEN;
+            if (player.isDead(lavaHeight)) gameState = GAMEOVERSCREEN;
 
             //Resovle Collisions
             for (Platform p : platformManager.getOnScreenPlatforms ()) {
@@ -215,7 +222,7 @@ void draw() {
 
             timer.update(); // call and draw timer
             platformManager.setDifficulty(timer.getTimePassed());
-            displayTime(450, 600);
+            displayTime(width * .92f, height * .95f);
         }
         break;
     case GAMEOVERSCREEN:

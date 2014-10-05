@@ -49,10 +49,29 @@ class MultiSpawn {
 
         floor = new Platform(ceil(width/blockWidth));
         floor.getAABB().setRange(0, width+floor.getWidth(), 0, height);
+
+        startSequence();
+    }
+
+    void startSequence() {
+
         floor.setPosition(0, height/3);
         floor.toggleGravity(true);
-        floor.setGravity(0,1);
-        platformsOnScreen.add(floor);
+        floor.setGravity(0, 1);
+        platformsOnScreen.add(floor); 
+        
+        for (PlatformSpawner currentSpawner : spawners) {
+            spawnPlatform(currentSpawner);
+            Platform p = currentSpawner.getLastSpawned();
+            p.setY(random(height/5-jumpUnit, height/5));
+        }
+    }
+
+    void reset() {
+        platformsOnScreen.clear();
+        platformPool.clear();
+        difficultyLevel = 4;
+        startSequence();
     }
 
     void addSpawner(float xMin, float xMax, float interval) {
@@ -70,6 +89,7 @@ class MultiSpawn {
 
         for (int i = 0; i < platformPool.size (); i++) {
             Platform p = platformPool.get(i);
+            if (p == floor) break;
             if (i == platformPool.size()-1) {
                 p.resizePlatform(numBlocks);
                 return p;
@@ -119,7 +139,8 @@ class MultiSpawn {
 
     void update(float deltaTime) {
         stateTime += deltaTime;
-        if (floor.getY() > height - 235) {
+        
+        if (floor.getY() > height - 235) { //lava
             platformsOnScreen.remove(floor);
         }
 
@@ -159,7 +180,7 @@ class MultiSpawn {
         for (int i = 0; i < platformsOnScreen.size (); i++) {
             Platform p = platformsOnScreen.get(i);
             p.update(deltaTime);
-            if (p.getY() > height - 235) {
+            if (p.getY() > height - 235) { //lava
                 setInactive(p);
             }
         }
