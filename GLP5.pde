@@ -78,6 +78,7 @@ void setup() {
     //Player
     //-------
     player = new Player();
+    player.getAABB().setRange(l_wall.width, width - r_wall.width, 0, height-player.getAABB().getHeight());
     //-------
     lava = new Lava(color(138, 17, 24), 0.002, lavaHeight);
     lava2 = new Lava(color(227, 56, 28), 0.003, lavaHeight-5);
@@ -117,18 +118,18 @@ void title() {
     lava3.display();
     lava3.drawGradient();
 
-    image(logo, 65, 100);
-    image(copyright, 142, 585);
+    image(logo, (width-logo.width)/2f, height*(1/6f));
+    image(copyright, (width-copyright.width)/2f, height*.95f);
 
     textAlign(CENTER);
     //PRESS ANY BUTTON TEXT
     textFont(startFont);
     //Shadow:
     fill(125, 51, 15);
-    text("PRESS ANY BUTTON", width/2, 434);
+    text("PRESS ANY BUTTON", width/2, height * .7f + 4);
     //Actual Start Text:
     fill(222, 255, 122);
-    text("PRESS ANY BUTTON", width/2, 430);
+    text("PRESS ANY BUTTON", width/2, height * .7f);
 }
 
 //Displays GameOver screen

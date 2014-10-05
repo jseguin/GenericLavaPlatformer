@@ -44,8 +44,8 @@ class BoxCollider {
     void setRange(float xMin, float xMax, float yMin, float yMax) {
         xRangeMin = xMin;
         xRangeMax = xMax - w;
-        yRangeMin = yMin - h;
-        yRangeMax = yMax;
+        yRangeMin = yMin;
+        yRangeMax = yMax - h;
     }
 
     //Returns the bounds inside an array [xmin, xmax, ymin, ymax]
