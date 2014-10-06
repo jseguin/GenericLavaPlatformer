@@ -16,6 +16,7 @@ GLP5 has been tested and confirmed working in Processing 2.2.1.
 To load the project open GLP5.pde in Processing 2.2.1.
 
 ### Authors
+
 Code: Jonathan Seguin
 Art: Konstantino Kapetaneas
 Lava Inspirations: Winnie Kwan
