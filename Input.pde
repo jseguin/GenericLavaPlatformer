@@ -5,7 +5,6 @@ boolean left, right, jump;
 void keyPressed() {
     switch (gameState) {
     case TITLESCREEN:        
-        gameState = GAMEPLAYSCREEN;
         gameStateChange(GAMEPLAYSCREEN);
         break;
 
@@ -23,8 +22,6 @@ void keyPressed() {
 
     case GAMEOVERSCREEN:
         if (key == 'r' || key == 'R') {
-            reset();
-            gameState = GAMEPLAYSCREEN;
             gameStateChange(GAMEPLAYSCREEN);
         }
         break;
