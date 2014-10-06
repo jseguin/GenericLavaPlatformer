@@ -1,14 +1,7 @@
 //Jonathan Seguin, 2014
 class Player extends MovableEntity {
 
-    protected static final int LEFT = 0;
-    protected static final int RIGHT = 1;
-    protected static final int UP = 2;
-    protected static final int DOWN = 3;
-    protected int direction;
-    
     private boolean platformLocked;
-    private boolean doubleJumpEnabled;
     private boolean isGravityAffected = true;
     private float maxSpeedX, maxSpeedY;
     private int jumpCounter = 0;
@@ -103,7 +96,7 @@ class Player extends MovableEntity {
     //method checks to see if character is dead
     //and changes game state to game over if true
     boolean isDead(float lavaHeight) {
-        if (AABB.getY()+AABB.getHeight() > height-lavaHeight) {
+        if (AABB.getY() > height-lavaHeight) {
             return true;
         }
         return false;

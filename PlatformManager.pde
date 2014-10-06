@@ -23,14 +23,11 @@ class MultiSpawn {
         blockWidth = refPlatform.getWidth();
         int maxPlatformBlocks = 4;
         maxPlatformWidth = blockWidth * maxPlatformBlocks;
-
         int range = xRangeMax-xRangeMin;
-
         float extraSpace = range - (maxPlatformWidth + playerWidth) * numSpawners;
         extraSpace = extraSpace > 0 ? extraSpace : 0;
         float extraPerColumn = extraSpace / numSpawners;
         float columnWidth = maxPlatformWidth + extraPerColumn;
-        //---
 
         for (int i = 0; i < numSpawners; i++) {
 
@@ -55,7 +52,7 @@ class MultiSpawn {
 
     void startSequence() {
 
-        floor.setPosition(0, height/3);
+        floor.setPosition(0, height/2.2);
         floor.toggleGravity(true);
         floor.setGravity(0, 1);
         platformsOnScreen.add(floor); 
@@ -102,7 +99,6 @@ class MultiSpawn {
 
         Platform p = new Platform(numBlocks);
         platformPool.add(p);
-        //        println("created extra platform");
         return p;
     }
 

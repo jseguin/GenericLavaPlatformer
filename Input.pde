@@ -1,11 +1,12 @@
 //Jonathan Seguin, 2014
 boolean jumpInputLocked = false;
+boolean left, right, jump; 
 
 void keyPressed() {
     switch (gameState) {
-    case TITLESCREEN:
+    case TITLESCREEN:        
         gameState = GAMEPLAYSCREEN;
-        timer.begin();
+        gameStateChange(GAMEPLAYSCREEN);
         break;
 
     case GAMEPLAYSCREEN:
@@ -24,6 +25,7 @@ void keyPressed() {
         if (key == 'r' || key == 'R') {
             reset();
             gameState = GAMEPLAYSCREEN;
+            gameStateChange(GAMEPLAYSCREEN);
         }
         break;
     }

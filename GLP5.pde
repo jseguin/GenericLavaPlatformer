@@ -1,7 +1,6 @@
 /****************************************************************************
- * Author: Jonathan Seguin, Konstantino Kapetaneas, Winnie Kwan
- * Last Modified: April 21st 2010
- * Final Project
+ * Author: Jonathan Seguin
+ * Last Modified: October 6th 2014
  ****************************************************************************/
 //Description: don't fall into lava, jump, yay.
 
@@ -31,25 +30,22 @@ PImage logo, copyright; // title screen images
 
 Player player;
 
-Lava lava; //objects to draw layered lava
-Lava lava2;// "
-Lava lava3;// "
+Lava lava; 
+Lava lava2;
+Lava lava3;
+Lava[] layeredLava; 
 
-float lavaHeight = 200;//level of lava for game play
-float titleScreen_lavaHeight = 270;// level of lava for title screen
+float DEFAULT_LAVAHEIGHT;
+float GAMEPLAY_LAVAHEIGHT;
+float lavaHeight = DEFAULT_LAVAHEIGHT;//level of lava for game play
 
 final int TITLESCREEN = 0;
 final int GAMEPLAYSCREEN = 1;
 final int GAMEOVERSCREEN = 2;
 int gameState = TITLESCREEN;
 
-boolean left, right, jump; //booleans switches to see if an action is to be performed
-
-//Test Stuff, Remove!
 MultiSpawn platformManager;
 
-//Initialization - see ^Variables^ for what each variable does.
-//----------------------------------------------------------------------------
 void setup() {
     size(632, 620, P2D);
     //    smooth(); //uncomment for better graphics (at least tino thinks so) 
@@ -61,24 +57,28 @@ void setup() {
     startFont = loadFont("pixelfont.vlw");
 
     //Image Loading
-    //-----------------------------------------
     logo = loadImage("data/logo.png");
     copyright = loadImage("data/copyright.png");
     bg = loadImage("data/background.gif");
     l_wall = loadImage ("data/wall_left.gif");
     r_wall = loadImage ("data/wall_right.gif");
     block = loadImage("plat_block.gif");
-    //-----------------------------------------
 
     //Player
-    //-------
     player = new Player();
     player.getAABB().setRange(l_wall.width, width - r_wall.width, 0, height-player.getAABB().getHeight());
     player.setPosition(width/2 - player.getAABB().getWidth()/2, height/4 + player.getAABB().getHeight());
-    //-------
-    lava = new Lava(color(138, 17, 24), 0.002, lavaHeight);
-    lava2 = new Lava(color(227, 56, 28), 0.003, lavaHeight-5);
-    lava3 = new Lava(color(251, 102, 30), 0.004, lavaHeight-10);
+
+    //Lava
+    DEFAULT_LAVAHEIGHT = height * .435f;
+    GAMEPLAY_LAVAHEIGHT = height * .333f;
+    lava = new Lava(color(138, 17, 24), 0.002, DEFAULT_LAVAHEIGHT);
+    lava2 = new Lava(color(227, 56, 28), 0.003, DEFAULT_LAVAHEIGHT-5);
+    lava3 = new Lava(color(251, 102, 30), 0.004, DEFAULT_LAVAHEIGHT-10);
+    lava3.toggleGradient(true);
+    layeredLava = new Lava[] {
+        lava, lava2, lava3
+    };
 
     //Platforms
     platformManager = new MultiSpawn(4, 0 + l_wall.width, width - r_wall.width, int(player.getAABB().getWidth()));
@@ -95,19 +95,17 @@ void stop() {
     super.stop();
 }
 
+void drawLayeredLava() {
+    for (Lava lava : layeredLava) {
+        lava.update(FrameTime.deltaTime());
+        lava.display();
+    }
+}
+
 //method displays title screen
 void title() {
     image(bg, 0, 0, width, height);
-    lava.setHeight(titleScreen_lavaHeight);
-    lava2.setHeight(titleScreen_lavaHeight-5);
-    lava3.setHeight(titleScreen_lavaHeight-10);
-    lava.update(FrameTime.deltaTime());
-    lava2.update(FrameTime.deltaTime());
-    lava3.update(FrameTime.deltaTime());
-    lava.display();
-    lava2.display();
-    lava3.display();
-    lava3.drawGradient();
+    drawLayeredLava();
 
     image(logo, (width-logo.width)/2f, height*(1/6f));
     image(copyright, (width-copyright.width)/2f, height*.95f);
@@ -125,19 +123,11 @@ void title() {
 
 //Displays GameOver screen
 void gameOver() {
+    println(FrameTime.deltaTime());
     image(bg, 0, 0, width, height);
     image(l_wall, 0, 0);
     image(r_wall, width-r_wall.width, 0);
-    lava.setHeight(titleScreen_lavaHeight);
-    lava2.setHeight(titleScreen_lavaHeight-5);
-    lava3.setHeight(titleScreen_lavaHeight-10);
-    lava.update(FrameTime.deltaTime());
-    lava2.update(FrameTime.deltaTime());
-    lava3.update(FrameTime.deltaTime());
-    lava.display();
-    lava2.display();
-    lava3.display();
-    lava3.drawGradient();
+    drawLayeredLava();
     fill(0, 100);
     rect(0, 0, width, height);
     textAlign(CENTER);
@@ -175,16 +165,39 @@ void reset() {
     platformManager.reset();
     timer.reset();
     timer.begin();
-    lava.setHeight(lavaHeight);
-    lava2.setHeight(lavaHeight-5);
-    lava3.setHeight(lavaHeight-10);
+    left = false;
+    right = false;
+    jump = false;
+}
+
+void gameStateChange(int gameState) {
+    switch (gameState) {
+    case TITLESCREEN:
+        for (int i = 0; i < layeredLava.length; i++) {
+            layeredLava[i].setHeight(DEFAULT_LAVAHEIGHT - i*5);
+        }
+        this.gameState = TITLESCREEN;
+        break;
+    case GAMEPLAYSCREEN:
+        reset();
+        for (int i = 0; i < layeredLava.length; i++) {
+            layeredLava[i].setHeight(GAMEPLAY_LAVAHEIGHT - i*5);
+        }
+        this.gameState = GAMEPLAYSCREEN;
+        break;
+    case GAMEOVERSCREEN:
+        timer.halt();
+        lavaHeight = DEFAULT_LAVAHEIGHT;
+        for (int i = 0; i < layeredLava.length; i++) {
+            layeredLava[i].setHeight(GAMEPLAY_LAVAHEIGHT - i*5);
+        }
+        this.gameState = GAMEOVERSCREEN;
+    }
 }
 
 void draw() {
     float delta = FrameTime.deltaTime();
     //    println("FPS: " + frameRate);
-    //    gameState = GAMEOVERSCREEN;
-
     switch (gameState) {
     case TITLESCREEN:
         title();
@@ -193,14 +206,13 @@ void draw() {
         {
             image(bg, 0, 0, width, height); //draw background
 
-
             //Update Platforms
             platformManager.update(delta);
 
             //Update Player
             player.update(delta);
 
-            if (player.isDead(lavaHeight)) gameState = GAMEOVERSCREEN;
+            if (player.isDead(GAMEPLAY_LAVAHEIGHT)) gameStateChange(GAMEOVERSCREEN);
 
             //Resovle Collisions
             for (Platform p : platformManager.getOnScreenPlatforms ()) {
@@ -212,13 +224,7 @@ void draw() {
             image(l_wall, 0, 0);
             image(r_wall, width-r_wall.width, 0);
 
-            lava.update(delta);
-            lava2.update(delta);
-            lava3.update(delta);
-            lava.display();
-            lava2.display();
-            lava3.display();
-            lava3.drawGradient();
+            drawLayeredLava();
 
             timer.update(); // call and draw timer
             platformManager.setDifficulty(timer.getTimePassed());
@@ -226,7 +232,6 @@ void draw() {
         }
         break;
     case GAMEOVERSCREEN:
-        timer.halt();
         gameOver();
         break;
     }

@@ -1,6 +1,12 @@
 //Jonathan Seguin, 2014
 abstract class MovableEntity implements Entity {
-
+    
+    protected static final int LEFT = 0;
+    protected static final int RIGHT = 1;
+    protected static final int UP = 2;
+    protected static final int DOWN = 3;
+    protected int direction;
+    
     protected BoxCollider AABB;
     protected PVector velocity, acceleration;
     protected boolean isGravityAffected;

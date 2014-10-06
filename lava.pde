@@ -2,12 +2,15 @@
 class Lava {
 
     float lavaHeight = height/4;
+    float stateTime;
     float noiseConst; //how wavy the lava is: under 0.01 works best for lava effect
     final float time = 0.01; // represents a second dimension of time in the noise calculation
     //  float current;//current noise calculation
     color lavaColour; // lava colour
     int strokeThickness = 1;
     float[] noiseLevels;
+    boolean gradientEnabled = false;
+
     color[] gradientArray = {
         color(120, 42, 5), 
         color(143, 51, 8), 
@@ -39,10 +42,15 @@ class Lava {
             rect(0, (height-30)-(15*i), width, 30);
         }
     }
+    
+    void toggleGradient(boolean state) {
+        gradientEnabled = state;
+    }
 
     void update(float delta) {
+        //        stateTime += delta;
         for (int x = 0; x < width; x++) {
-            noiseLevels[x] = noise(x*noiseConst, frameCount*time) * 50;
+            noiseLevels[x] = noise(x*noiseConst, frameCount*time/*stateTime/1.5*/) * 50;
         }
     }
 
@@ -54,6 +62,9 @@ class Lava {
         stroke(lavaColour);
         for (int x = 0; x < width; x+=strokeThickness) {
             line (x, height, x, height - lavaHeight + noiseLevels[x]);
+        }
+        if (gradientEnabled) {
+            drawGradient();
         }
     }
 }
