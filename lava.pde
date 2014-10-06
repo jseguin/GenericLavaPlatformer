@@ -1,5 +1,5 @@
 //Jonathan Seguin, 2014
-class Lava {
+class Lava implements Entity{
 
     float lavaHeight = height/4;
     float stateTime;
@@ -48,7 +48,7 @@ class Lava {
     }
 
     void update(float delta) {
-        //        stateTime += delta;
+//        stateTime += delta;
         for (int x = 0; x < width; x++) {
             noiseLevels[x] = noise(x*noiseConst, frameCount*time/*stateTime/1.5*/) * 50;
         }

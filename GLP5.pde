@@ -159,7 +159,7 @@ void displayTime(float x, float y) {
 
 void reset() {
     song.rewind();
-    song.play(1500);
+    song.play();
     player.setPosition(width/2 - player.getAABB().getWidth()/2, height/4 + player.getAABB().getHeight());
     player.setVelocity(0, 0);
     platformManager.reset();
