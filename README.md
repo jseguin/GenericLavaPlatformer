@@ -4,11 +4,11 @@
 
 ### Screenshots
 
-![Title Screen](docs/GLP5_TitleScreen.png =331x)
+![Title Screen](docs/GLP5_TitleScreen.png)
 
-![Game Play Screen](docs/GLP5_GameScreen.png =331x)
+![Game Play Screen](docs/GLP5_GameScreen.png)
 
-![Game Over Screen](docs/GLP5_GameOver.png =331x)
+![Game Over Screen](docs/GLP5_GameOver.png)
 
 ### How To Run
 GLP5 has been tested and confirmed working in Processing 2.2.1.
